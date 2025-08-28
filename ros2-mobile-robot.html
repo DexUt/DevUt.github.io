@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROS2 Mobile Robot | Utkarsh Sheel Anand</title>
+    <meta name="description" content="Details about the ROS2 Mobile Robot project, including build photos and a link to the GitHub repository.">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list">
+                    <li><a href="./index.html" class="active">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>ROS2 Mobile Robot</span>
+            </nav>
+            <h1>ROS 2 Mobile Robot</h1>
+            <p class="project-abstract">I built a differential-drive mobile robot from the ground up in ROS 2, taking it from a CAD-accurate URDF to a physics-based Gazebo simulation with real-time TF frames, wheel odometry, and joystick/keyboard teleop. The stack includes a parameterized xacro description, a validated TF tree (map → odom → base_link → sensors), ros2_control with the diff_drive_controller, and RViz visualization (robot model, TF, laser scan, odometry). The result is a reproducible bring-up that launches the robot, spawns it into Gazebo, and drives it interactively while publishing ground-truth and fused odometry—ready for navigation and SLAM upgrades.</p>
+            
+            <a href="{{ROS2_GITHUB_URL}}" class="btn btn-primary btn-external" target="_blank" rel="noopener">View on GitHub</a>
+            
+            <div class="key-details">
+                <h2>Key Details</h2>
+                <ul>
+                    <li><strong>Methods <br></strong> 
+                                <ul><li>Authored a modular URDF/xacro: base_link, left/right wheels, passive caster, set inertias/collisions from geometry; defined materials and sensor mounts.
+
+<li>Built a clean TF tree using robot_state_publisher and targeted static_transform_publisher frames (base_link → base_laser, base_link → imu_link), eliminating frame discontinuities and ensuring no TF loops.
+
+<li>Implemented ros2_control: joint_state_broadcaster + diff_drive_controller; tuned wheel radius, separation, velocity/accel limits, and PID gains to achieve straight-line and in-place rotation accuracy.
+
+
+<li>RViz2 bring-up: configured displays for RobotModel, TF.
+
+<li>Wrote launch files for one-command bring-up (description → controllers → Gazebo spawn → RViz).
+<li>Added teleop (keyboard/joystick) publishing geometry_msgs/Twist; recorded rosbag sessions and used rqt_graph/rqt_plot to validate topics and controller responses.</li></ul>
+                    </li>
+                    <li><strong>Tools <br> </strong> 
+                    
+                    <ul><li>Software: ROS 2, xacro, tf2, ros2_control, gazebo_ros_pkgs, RViz2, teleop_twist_keyboard, colcon, rqt tools.</li></ul>
+                    </li>
+                    <li><strong>Outcome <br> </strong> 
+                    
+                    <ul><li>
+                        Delivered a single-command bring-up that spawns the robot, starts controllers, and opens RViz—useful for demos and regression checks.</ul>
+                    
+                    </li>
+                </ul>
+            </div>
+
+            <div class="gallery">
+                <h2>Image Gallery</h2>
+                <figure>
+                    <img src="./assets/img/ros2/ros2-1.jpg" alt="Description of the first ROS2 robot image.">
+                    <figcaption>Mobile Robot with World Model in Gazebo</figcaption>
+                </figure>
+                <figure>
+                    <img src="./assets/img/ros2/ros2-2.jpg" alt="Description of the second ROS2 robot image.">
+                    <figcaption>Mobile Robot with Camera in Gazebo</figcaption>
+                </figure>
+                <figure>
+                    <img src="./assets/img/ros2/ros2-3.jpg" alt="Description of the third ROS2 robot image.">
+                    <figcaption>Mobile Robot TF</figcaption>
+                </figure>
+            </div>
+            
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">← Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2025 Utkarsh Sheel Anand. All rights reserved.</p>
+            <ul class="social-links">
+                <li><a href="https://github.com/Utkarsh-Sheel-A"  target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href= "https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>
