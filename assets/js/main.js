@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
             'low-cost-gc.html',
             'heat-sink.html',
             'light-sport-aircraft.html',
-            'drone-project.html'
+            'drone-project.html',
+            'spacecraft-control.html',
+            'quick-return.html'
         ];
 
         const titles = {
@@ -36,7 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
             'low-cost-gc.html': 'Low Cost GC',
             'heat-sink.html': 'Heat Sink',
             'light-sport-aircraft.html': 'Light Sport Aircraft',
-            'drone-project.html': 'Drone Project'
+            'drone-project.html': 'Drone Project',
+            'spacecraft-control.html':'Spacecraft Attitude Dynamics and Control',
+            'quick-return.html':'Crank, Link, Repeat - Quick-Return Dynamics'
         };
 
         const currentPage = window.location.pathname.split('/').pop();
