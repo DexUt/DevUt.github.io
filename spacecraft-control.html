@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spacecraft Attitude Dynamics and Control | Utkarsh Sheel Anand</title>
+    <meta name="description" content="Details on the Spacecraft Attitude Dynamics and Control project.">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>Spacecraft Attitude Dynamics and Control</span>
+            </nav>
+
+            <div class="project-header">
+                <span class="project-category-tag">Aerospace</span>
+                <h1>Spacecraft Attitude Dynamics and Control</h1>
+            </div>
+
+            <p class="project-abstract">Nonlinear quaternion feedback control of a reaction-wheel spacecraft (PROBA-2 scenario) in MATLAB/Simulink: derived RW-augmented dynamics, built guidance (GDC) + control (CTL) blocks, added two-body orbit propagation and environmental torques (drag, SRP, gravity-gradient, magnetic), and tuned gains via the alpha–beta method.</p>
+
+            <div class="key-details">
+                <div class="key-details-grid">
+                    <div class="detail-card">
+                        <h3>Methods</h3>
+                        <ul>
+                            <li>Implemented total angular momentum + wheel dynamics and Euler's equation with three reaction wheels; quaternion kinematics and CBI conversion; closed-loop quaternion feedback with qd = [0, 0, 0, 1]ᵀ.</li>
+                            <li>Four Kp selection strategies (Scaled, Inverse-Inertia, Eigenaxis); Kd from ωₙ = 0.156 rad/s and ~50 s settling-time spec.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Tools</h3>
+                        <ul>
+                            <li>MATLAB/Simulink subsystems: DYN, ACT (RW), GDC, CTL, ORB, TEX, and Star Tracker (QUA2CBI).</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Outcome</h3>
+                        <ul>
+                            <li>Produced wheel-torque inputs; spacecraft quaternions and angular-rate histories; qi–qj phase plots for all four gain-selection methods; orbital distance/speed over one revolution; net perturbing torque vs time; and closed-loop runs showing convergence under disturbances after alpha–beta tuning.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pdf-viewer">
+                <iframe src="./reports/spacecraft-control.pdf" title="Spacecraft Attitude Dynamics and Control PDF" loading="lazy"></iframe>
+                <p><a href="./reports/spacecraft-control.pdf" target="_blank" rel="noopener">Download the PDF</a></p>
+            </div>
+
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">← Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2025 Utkarsh Sheel Anand. All rights reserved.</p>
+            <ul class="social-links">
+                <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>

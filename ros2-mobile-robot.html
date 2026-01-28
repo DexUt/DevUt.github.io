@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROS2 Mobile Robot | Utkarsh Sheel Anand</title>
+    <meta name="description" content="Details about the ROS2 Mobile Robot project, including build photos and a link to the GitHub repository.">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>ROS2 Mobile Robot</span>
+            </nav>
+
+            <div class="project-header">
+                <span class="project-category-tag">Robotics</span>
+                <h1>ROS 2 Mobile Robot</h1>
+            </div>
+
+            <p class="project-abstract">I built a differential-drive mobile robot from the ground up in ROS 2, taking it from a CAD-accurate URDF to a physics-based Gazebo simulation with real-time TF frames, wheel odometry, and joystick/keyboard teleop. The stack includes a parameterized xacro description, a validated TF tree (map → odom → base_link → sensors), ros2_control with the diff_drive_controller, and RViz visualization (robot model, TF, laser scan, odometry). The result is a reproducible bring-up that launches the robot, spawns it into Gazebo, and drives it interactively while publishing ground-truth and fused odometry—ready for navigation and SLAM upgrades.</p>
+
+            <a href="https://github.com/Utkarsh-Sheel-A/ROS2-Mobile-Robot" class="btn btn-primary btn-external" target="_blank" rel="noopener">View on GitHub</a>
+
+            <div class="key-details">
+                <div class="key-details-grid">
+                    <div class="detail-card">
+                        <h3>Methods</h3>
+                        <ul>
+                            <li>Authored a modular URDF/xacro: base_link, left/right wheels, passive caster, set inertias/collisions from geometry; defined materials and sensor mounts.</li>
+                            <li>Built a clean TF tree using robot_state_publisher and targeted static_transform_publisher frames (base_link → base_laser, base_link → imu_link), eliminating frame discontinuities and ensuring no TF loops.</li>
+                            <li>Implemented ros2_control: joint_state_broadcaster + diff_drive_controller; tuned wheel radius, separation, velocity/accel limits, and PID gains to achieve straight-line and in-place rotation accuracy.</li>
+                            <li>RViz2 bring-up: configured displays for RobotModel, TF.</li>
+                            <li>Wrote launch files for one-command bring-up (description → controllers → Gazebo spawn → RViz).</li>
+                            <li>Added teleop (keyboard/joystick) publishing geometry_msgs/Twist; recorded rosbag sessions and used rqt_graph/rqt_plot to validate topics and controller responses.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Tools</h3>
+                        <ul>
+                            <li>Software: ROS 2, xacro, tf2, ros2_control, gazebo_ros_pkgs, RViz2, teleop_twist_keyboard, colcon, rqt tools.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Outcome</h3>
+                        <ul>
+                            <li>Delivered a single-command bring-up that spawns the robot, starts controllers, and opens RViz—useful for demos and regression checks.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery">
+                <h2>Image Gallery</h2>
+                <div class="gallery-grid">
+                    <figure>
+                        <img src="./assets/img/ros2/ros2-1.jpg" alt="Mobile Robot with World Model in Gazebo">
+                        <figcaption>Mobile Robot with World Model in Gazebo</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./assets/img/ros2/ros2-2.jpg" alt="Mobile Robot with Camera in Gazebo">
+                        <figcaption>Mobile Robot with Camera in Gazebo</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./assets/img/ros2/ros2-3.jpg" alt="Mobile Robot TF Visualization">
+                        <figcaption>Mobile Robot TF</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">← Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2025 Utkarsh Sheel Anand. All rights reserved.</p>
+            <ul class="social-links">
+                <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>

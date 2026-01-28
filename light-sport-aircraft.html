@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light Sport Aircraft | Utkarsh Sheel Anand</title>
+    <meta name="description" content="Details on the Light Sport Aircraft Design Project, an engineering design challenge.">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>Light Sport Aircraft</span>
+            </nav>
+
+            <div class="project-header">
+                <span class="project-category-tag">Aerospace</span>
+                <h1>Light Sport Aircraft Design</h1>
+            </div>
+
+            <p class="project-abstract">Completed for AERO 3002 Aerospace Design & Practice, this project follows the course brief to take a GA aircraft from requirements to a defended conceptual design, with a white-paper proposal and a final report. Our team co-designed the UCA, a two-seat light-sport trainer that emphasizes forgiving handling and durability. The mid-wing, H-tail configuration with reinforced tandem gear meets the RFP/CARs (AWM 523) targets: MTOW 1,416.46 lb, cruise 110 KTAS @ 10,000 ft, stall ≤ 40 KTAS, takeoff over 50 ft in ~1,000 ft, landing ~1,200 ft, endurance ≥ 4 h (analysis shows up to ~7.6 h at 79 KTAS); propulsion is a Continental O-200 (100 BHP) with a fixed 3-blade prop.</p>
+
+            <div class="key-details">
+                <div class="key-details-grid">
+                    <div class="detail-card">
+                        <h3>Methods</h3>
+                        <ul>
+                            <li>Worked the AERO 3002 flow: market & mission pitch → initial sizing/constraint analysis → configuration down-select → aero/performance/loads → cost & compliance; documented in a proposal and a final design report per course deliverables.</li>
+                            <li>Built mission and constraint diagram to select W/S ≈ 13 and T/W ≈ 0.258; ran historical weight sizing (crew + payload ≈ 500 lb) to converge on MTOW 1,416.46 lb.</li>
+                            <li>Aerodynamics with XFLR5: NACA 4412 wing, AR≈7, taper 0.55; obtained CLmax ≈ 1.69–1.76, CDmin ≈ 0.0067; high-lift flaps 15°/30°.</li>
+                            <li>Propulsion trade against requirements led to the Continental O-200; prop sized to Ø≈5.06 ft, η≈0.79; checked tip speed and static thrust.</li>
+                            <li>Performance & loads: verified cruise, TO/LDG, climb, emergency divert; produced a V-n diagram for utility-category operations.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Tools</h3>
+                        <ul>
+                            <li>Analysis: XFLR5 (aero & polars), MATLAB (constraint/mission sizing), Desmos (drag polar & V-n checks)—toolset aligned with course guidance.</li>
+                            <li>References & data: Gudmundsson GA design methods; competitive aircraft comparisons; avionics shortlist (GNC 355, G500 TX, GDL 39, GTS 800).</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Outcome</h3>
+                        <ul>
+                            <li>Met the course brief and RFP: compliance table shows requirements satisfied or exceeded (e.g., TO/LDG, stall, endurance, ceiling).</li>
+                            <li>Delivered all AERO 3002 artifacts (white-paper proposal + final report/logbook) demonstrating end-to-end conceptual design practice.</li>
+                            <li>Produced a costed concept: ~$165.6k unit cost, ~$190.4k minimum selling price; estimated ~$124/hr at 500 h/yr.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pdf-viewer">
+                <iframe src="./reports/light-sport-aircraft.pdf" title="Light Sport Aircraft Design PDF" loading="lazy"></iframe>
+                <p><a href="./reports/light-sport-aircraft.pdf" target="_blank" rel="noopener">Download the PDF</a></p>
+            </div>
+
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">← Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2025 Utkarsh Sheel Anand. All rights reserved.</p>
+            <ul class="social-links">
+                <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>

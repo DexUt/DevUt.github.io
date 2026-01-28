@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone Project | Utkarsh Sheel Anand</title>
+    <meta name="description" content="Details on the Drone Project.">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>Drone Project</span>
+            </nav>
+
+            <div class="project-header">
+                <span class="project-category-tag">Aerospace</span>
+                <h1>Drone Project</h1>
+            </div>
+
+            <p class="project-abstract">Autonomous quadrotor stack built in PX4 + ROS + Gazebo (SITL): takeoff, PD trajectory tracking, and real-time LiDAR-based obstacle avoidance via Artificial Potential Fields.</p>
+
+            <div class="key-details">
+                <div class="key-details-grid">
+                    <div class="detail-card">
+                        <h3>Methods</h3>
+                        <ul>
+                            <li>PX4 SITL with Gazebo; MAVROS offboard control; C++ ROS nodes streaming position/velocity setpoints (>2 Hz); PD outer-loop for trajectory tracking.</li>
+                            <li>Repulsive-only Artificial Potential Field for reactive avoidance using 2D LiDAR; returns to hover when clear.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Tools</h3>
+                        <ul>
+                            <li>PX4 Autopilot, MAVROS, Gazebo Classic, ROS (C++), EKF2 in PX4, MATLAB (APF prototyping).</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Outcome</h3>
+                        <ul>
+                            <li>Autonomous takeoff/hover at 2 m; stable circular-path tracking; real-time avoidance when a moving obstacle enters the influence radius; modular architecture ready to import the Manta geometry for HIL/field work.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pdf-viewer">
+                <iframe src="./reports/drone-project.pdf" title="Drone Project PDF" loading="lazy"></iframe>
+                <p><a href="./reports/drone-project.pdf" target="_blank" rel="noopener">Download the PDF</a></p>
+            </div>
+
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">← Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2025 Utkarsh Sheel Anand. All rights reserved.</p>
+            <ul class="social-links">
+                <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>

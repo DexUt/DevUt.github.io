@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utkarsh Sheel Anand | Portfolio</title>
+    <meta name="description" content="The professional portfolio of Utkarsh Sheel Anand, showcasing projects in engineering and robotics.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://utkarsh.dev/">
+    <meta property="og:title" content="Utkarsh Sheel Anand | Portfolio">
+    <meta property="og:description" content="The professional portfolio of Utkarsh Sheel Anand, showcasing projects in engineering and robotics.">
+    <meta property="og:image" content="https://utkarsh.dev/assets/img/headshot.jpg">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://utkarsh.dev/">
+    <meta property="twitter:title" content="Utkarsh Sheel Anand | Portfolio">
+    <meta property="twitter:description" content="The professional portfolio of Utkarsh Sheel Anand, showcasing projects in engineering and robotics.">
+    <meta property="twitter:image" content="https://utkarsh.dev/assets/img/headshot.jpg">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h1>Utkarsh Sheel Anand</h1>
+                    <p class="tagline">Innovate. Automate. Dominate.</p>
+                    <div class="hero-cta">
+                        <a href="#featured-work" class="btn btn-primary">View Work</a>
+                        <a href="./contact.html" class="btn">Contact Me</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="./assets/img/headshot.jpeg" alt="A professional headshot of Utkarsh Sheel Anand.">
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <span>Scroll</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
+        </section>
+
+        <section class="featured-work" id="featured-work">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Featured Work</h2>
+                    <p>A collection of projects spanning robotics, aerospace systems, and research.</p>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">All</button>
+                    <button class="filter-tab" data-filter="robotics">Robotics</button>
+                    <button class="filter-tab" data-filter="aerospace">Aerospace</button>
+                    <button class="filter-tab" data-filter="research">Research</button>
+                </div>
+
+                <div class="card-grid">
+                    <article class="card" data-category="robotics">
+                        <span class="card-category">Robotics</span>
+                        <h3>Egg Mover Project</h3>
+                        <p>A robotic system designed to lift, transport, and precisely place a raw egg across obstacles using DC motors and Raspberry Pi control.</p>
+                        <a href="./egg-mover.html" class="card-link">View Project →</a>
+                    </article>
+
+                    <article class="card" data-category="robotics">
+                        <span class="card-category">Robotics</span>
+                        <h3>ROS2 Mobile Robot</h3>
+                        <p>A differential-drive mobile robot built from the ground up in ROS 2 with Gazebo simulation, real-time TF frames, and joystick teleop.</p>
+                        <a href="./ros2-mobile-robot.html" class="card-link">View Project →</a>
+                    </article>
+
+                    <article class="card" data-category="aerospace">
+                        <span class="card-category">Aerospace</span>
+                        <h3>Weather Satellite Design</h3>
+                        <p>A complete CubeSat mission design for weather monitoring including power budgets, link analysis, and orbital dynamics simulation.</p>
+                        <a href="./weather-satellite.html" class="card-link">View Project →</a>
+                    </article>
+
+                    <article class="card" data-category="research">
+                        <span class="card-category">Research</span>
+                        <h3>Low Cost Gas Chromatograph</h3>
+                        <p>An affordable analytical instrument for separating and analyzing compounds, designed for educational and research applications.</p>
+                        <a href="./low-cost-gc.html" class="card-link">View Project →</a>
+                    </article>
+
+                    <article class="card" data-category="research">
+                        <span class="card-category">Research</span>
+                        <h3>Enhanced Heat Sink</h3>
+                        <p>Advanced thermal management solution for hybrid-electric aircraft with optimized pin-fin designs for improved heat rejection.</p>
+                        <a href="./heat-sink.html" class="card-link">View Project →</a>
+                    </article>
+
+                    <article class="card" data-category="aerospace">
+                        <span class="card-category">Aerospace</span>
+                        <h3>Light Sport Aircraft Design</h3>
+                        <p>Comprehensive aircraft design including aerodynamic analysis, weight estimation, and performance calculations.</p>
+                        <a href="./light-sport-aircraft.html" class="card-link">View Project →</a>
+                    </article>
+
+                    <article class="card" data-category="aerospace">
+                        <span class="card-category">Aerospace</span>
+                        <h3>Drone Project</h3>
+                        <p>UAV design and control system development with emphasis on flight dynamics, stability analysis, and guidance algorithms.</p>
+                        <a href="./drone-project.html" class="card-link">View Project →</a>
+                    </article>
+
+                    <article class="card" data-category="aerospace">
+                        <span class="card-category">Aerospace</span>
+                        <h3>Spacecraft Attitude Dynamics and Control</h3>
+                        <p>ADCS simulation and analysis for spacecraft orientation control using various actuators and sensor configurations.</p>
+                        <a href="./spacecraft-control.html" class="card-link">View Project →</a>
+                    </article>
+
+                    <article class="card" data-category="robotics">
+                        <span class="card-category">Robotics</span>
+                        <h3>Quick-Return Dynamics</h3>
+                        <p>Mechanism design and analysis of crank-link systems for applications requiring non-uniform motion characteristics.</p>
+                        <a href="./quick-return.html" class="card-link">View Project →</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2025 Utkarsh Sheel Anand. All rights reserved.</p>
+            <ul class="social-links">
+                <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>
