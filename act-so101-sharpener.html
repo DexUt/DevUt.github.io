@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACT Policy on SO-101 | Utkarsh Sheel Anand</title>
+    <meta name="description" content="Training an ACT behavior-cloning policy with Hugging Face LeRobot on an SO-101 arm: 45 teleoperated demonstrations, 40,000 training steps on a laptop GPU, and 14 real-robot evaluation rollouts.">
+    <meta name="theme-color" content="#0B0E14">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dexut.github.io/devut.github.io/act-so101-sharpener.html">
+    <meta property="og:title" content="ACT Policy on SO-101 | Utkarsh Sheel Anand">
+    <meta property="og:description" content="Training an ACT behavior-cloning policy with Hugging Face LeRobot on an SO-101 arm: 45 teleoperated demonstrations, 40,000 training steps on a laptop GPU, and 14 real-robot evaluation rollouts.">
+    <meta property="og:image" content="https://dexut.github.io/devut.github.io/assets/img/act/setup-full.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <style>
+        /* Page-specific editorial treatment, kept here so this report can evolve
+           independently of the shared portfolio styles. */
+        body.act-report {
+            background:
+                radial-gradient(900px 540px at 88% -4%, rgba(52, 211, 153, 0.12), transparent 64%),
+                radial-gradient(700px 480px at -10% 32%, rgba(76, 194, 255, 0.07), transparent 70%),
+                var(--bg);
+        }
+
+        .act-report .project-page {
+            counter-reset: report-section;
+            padding-bottom: var(--sp-3xl);
+        }
+
+        .act-report .breadcrumbs {
+            margin-bottom: clamp(1.5rem, 4vw, 2.75rem);
+        }
+
+        .act-report .project-header {
+            position: relative;
+            isolation: isolate;
+            margin-bottom: var(--sp-lg);
+            padding: clamp(1.5rem, 4vw, 3rem);
+            border: 1px solid color-mix(in srgb, var(--cat) 26%, var(--border));
+            border-radius: var(--radius-lg);
+            background:
+                linear-gradient(115deg, rgba(52, 211, 153, 0.12), transparent 46%),
+                var(--surface-1);
+            box-shadow: 0 28px 70px -42px rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+        }
+
+        .act-report .project-header::after {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            width: 23rem;
+            aspect-ratio: 1;
+            right: -10rem;
+            bottom: -16rem;
+            border: 1px solid color-mix(in srgb, var(--cat) 33%, transparent);
+            border-radius: 50%;
+            box-shadow: 0 0 0 2.5rem rgba(52, 211, 153, 0.025),
+                        0 0 0 5rem rgba(52, 211, 153, 0.02);
+        }
+
+        .act-report .project-header h1 { max-width: 18ch; }
+
+        .act-report .project-abstract {
+            max-width: none;
+            margin: 0 0 var(--sp-2xl);
+            padding: clamp(1rem, 2vw, 1.35rem) clamp(1rem, 2.4vw, 1.5rem);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--cat);
+            border-radius: var(--radius-sm);
+            background: color-mix(in srgb, var(--surface-1) 72%, var(--bg));
+            font-size: clamp(1rem, 1.5vw, 1.125rem);
+            line-height: 1.8;
+        }
+
+        .act-report .project-abstract-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.45rem 2rem;
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .act-report .project-abstract-list li { padding-left: 0.25rem; }
+
+        @media (max-width: 640px) {
+            .act-report .project-abstract-list { grid-template-columns: 1fr; }
+        }
+
+        .act-report .project-section {
+            position: relative;
+            max-width: 1000px;
+            margin: clamp(3.5rem, 8vw, 6rem) auto;
+        }
+
+        .act-report .project-section > h2 {
+            display: flex;
+            align-items: center;
+            gap: var(--sp-sm);
+            margin-bottom: var(--sp-md);
+        }
+
+        .act-report .project-section > h2::before {
+            counter-increment: report-section;
+            content: counter(report-section, decimal-leading-zero);
+            display: inline-grid;
+            place-items: center;
+            width: 2.25rem;
+            height: 2.25rem;
+            border: 1px solid color-mix(in srgb, var(--cat) 42%, transparent);
+            border-radius: 50%;
+            background: var(--cat-soft);
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: var(--cat);
+        }
+
+        .act-report .project-section > h3 {
+            margin-top: var(--sp-2xl);
+            padding-top: var(--sp-lg);
+            border-top: 1px solid var(--border);
+        }
+
+        .act-report .project-section > p,
+        .act-report .project-section > ul,
+        .act-report .project-section > ol { max-width: 80ch; }
+
+        .act-report .section-lede {
+            padding-left: var(--sp-md);
+            border-left: 2px solid color-mix(in srgb, var(--cat) 52%, transparent);
+            color: color-mix(in srgb, var(--text-1) 75%, var(--text-2));
+        }
+
+        .act-report .result-section > p:last-child {
+            max-width: none;
+            padding: var(--sp-lg);
+            border: 1px solid color-mix(in srgb, var(--cat) 28%, var(--border));
+            border-radius: var(--radius);
+            background: linear-gradient(105deg, var(--cat-soft), transparent 68%), var(--surface-1);
+            font-size: 1.025rem;
+        }
+
+        .act-report .gallery { margin: clamp(1.75rem, 4vw, 3rem) 0; }
+
+        .act-report .gallery figure {
+            border-color: color-mix(in srgb, var(--border) 80%, var(--cat) 20%);
+            box-shadow: 0 22px 46px -36px #000;
+        }
+
+        .act-report .gallery figcaption {
+            padding: var(--sp-md) var(--sp-lg);
+            line-height: 1.65;
+        }
+
+        .act-report .table-wrap {
+            margin: var(--sp-xl) 0;
+            border-color: color-mix(in srgb, var(--border) 80%, var(--cat) 20%);
+            box-shadow: 0 18px 36px -32px #000;
+        }
+
+        .act-report .data-table caption {
+            padding: var(--sp-md) var(--sp-lg);
+            color: var(--cat);
+        }
+
+        .act-report .data-table th,
+        .act-report .data-table td { padding: 0.85rem var(--sp-lg); }
+
+        .act-report .data-table tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.012); }
+
+        .act-report .key-details { margin: var(--sp-xl) 0; }
+
+        .act-report .detail-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.025), transparent 54%), var(--surface-1);
+        }
+
+        .act-report .project-nav {
+            max-width: 1000px;
+            margin: var(--sp-4xl) auto 0;
+            padding-top: var(--sp-xl);
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 640px) {
+            .act-report .project-header { padding: var(--sp-lg); }
+            .act-report .project-header h1 { max-width: none; }
+            .act-report .project-section > h2 { align-items: flex-start; }
+            .act-report .project-section > h2::before { flex: 0 0 auto; margin-top: 0.05rem; }
+            .act-report .data-table th,
+            .act-report .data-table td { padding: 0.72rem var(--sp-md); }
+        }
+    </style>
+    <script>document.documentElement.classList.add('js');</script>
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body class="act-report">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav" aria-label="Primary">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active" aria-current="page">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page" data-category="machine-learning robotics">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>ACT Policy on SO-101</span>
+            </nav>
+
+            <div class="project-header">
+                <span class="project-category-tag">Machine Learning &middot; Robotics</span>
+                <h1>Teaching an SO-101 to Pick Up a Sharpener</h1>
+            </div>
+
+            <div class="project-abstract">
+                <ul class="project-abstract-list">
+                    <li><strong>Dataset:</strong> 45 episodes (teleoperated demonstrations)</li>
+                    <li><strong>Optimization:</strong> 40,000 training steps</li>
+                    <li><strong>Robot:</strong> SO-101 ARM</li>
+                    <li><strong>Visual observations:</strong> Top-down and wrist-mounted RGB cameras (plus joint-state measurements)</li>
+                    <li><strong>Policy:</strong> ACT (Action Chunking with Transformers)</li>
+                    <li><strong>Framework:</strong> Hugging Face LeRobot</li>
+                    <li><strong>Training hardware:</strong> NVIDIA RTX 3060 Laptop GPU</li>
+                </ul>
+            </div>
+
+            <div class="gallery">
+                <div class="gallery-grid gallery-grid--stack">
+                    <figure>
+                        <img src="./assets/img/act/setup-full.jpg" alt="The full SO-101 workspace: leader and follower arms side by side on the table" loading="lazy" decoding="async">
+                        <figcaption>Fig. 1: The physical rig. The follower arm (left) is the one the policy drives; the leader arm (right) is the hand-guided teleoperation handle used to record all 45 demonstrations, with the RTX 3060 laptop that trained the policy alongside it.</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <div class="project-section result-section">
+                <h2>Result</h2>
+
+                <div class="gallery">
+                    <div class="gallery-grid gallery-grid--stack">
+                        <figure>
+                            <video src="./assets/img/act/train-pass.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Successful ACT rollout: the SO-101 grasps the sharpener and places it in the bin"></video>
+                            <figcaption>Video 1: Successful evaluation rollout at checkpoint 40,000. The policy locates, reaches for, aligns with, grasps, lifts, transports, and releases the object in real time.</figcaption>
+                        </figure>
+                    </div>
+                </div>
+
+                <p><strong>8 of 14 episodes succeeded cleanly (57%)</strong>, 2 achieved partial success (14%), and 4 failed (29%) at checkpoint step 40,000. The failures were systematic: <strong>all four occurred under out-of-distribution object placements</strong>, either at the boundary of the in-distribution workspace region or shifted 2&ndash;3 cm from the demonstrated location. For in-distribution placements, the policy achieved 8 clean successes and 2 placement near-misses across 10 episodes, with no complete failures. For out-of-distribution placements, it achieved 0 clean or partial successes across 4 episodes.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>The Task</h2>
+                <p class="section-lede">Pick up the object and place it in a bin. There are no scripted waypoints or <code>grasp()</code> function. The policy must infer reaching, alignment, grasping, lifting, transport, and release entirely from demonstrations in the physical world, with no retry mechanism within an episode.</p>
+
+                <ol>
+                    <li>Locate the object</li>
+                    <li>Reach toward it</li>
+                    <li>Align the gripper</li>
+                    <li>Close and grasp</li>
+                    <li>Lift</li>
+                    <li>Transport toward the bin</li>
+                    <li>Position above the bin</li>
+                    <li>Release</li>
+                </ol>
+            </div>
+
+            <div class="project-section">
+                <h2>Project at a Glance</h2>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <caption>Setup, training and evaluation summary</caption>
+                        <tbody>
+                            <tr><td>Task</td><td>Pick up sharpener and place it in a bin</td></tr>
+                            <tr><td>Robot</td><td>SO-101 (physical, not simulated)</td></tr>
+                            <tr><td>Policy</td><td>ACT (Action Chunking with Transformers)</td></tr>
+                            <tr><td>Framework</td><td>Hugging Face LeRobot</td></tr>
+                            <tr><td>Demonstrations</td><td>45 episodes, teleoperated</td></tr>
+                            <tr><td>Training</td><td>40,000 steps, batch size 8</td></tr>
+                            <tr><td>Training hardware</td><td>NVIDIA RTX 3060 Laptop GPU</td></tr>
+                            <tr><td>Training time</td><td>7h 14m (434 min)</td></tr>
+                            <tr><td>Evaluation</td><td>14 real-robot rollouts, checkpoint 040000</td></tr>
+                            <tr><td>Success rate</td><td>8/14 clean (57%), 2/14 partial (14%), 4/14 fail (29%)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Method: ACT</h2>
+                <p class="section-lede">A standard behavior-cloning policy predicts one action at a time from the current observation, executes it, and re-predicts. Two failure patterns follow from that: small errors compound over a long episode, and re-deciding at every timestep can make the arm jitter instead of committing to a motion.</p>
+                <p>ACT instead predicts a short <strong>chunk</strong> of future actions in a single forward pass; the robot executes the chunk, then re-plans from a fresh observation. Fewer re-planning points means fewer chances to drift, and each chunk is trained to be a coherent trajectory rather than an isolated guess.</p>
+
+                <p class="section-lede">Images + Joint State (+ <em>z</em>) &rarr; ResNet-18 Vision Backbone &rarr; Transformer Encoder &rarr; Transformer Decoder &rarr; Chunk of <em>k</em> Future Actions</p>
+
+                <div class="gallery">
+                    <div class="gallery-grid gallery-grid--stack">
+                        <figure>
+                            <img src="./assets/img/act/act-architecture.png" alt="ACT architecture diagram: a CVAE encoder distills demonstrations into a style variable z, and a transformer encoder-decoder conditions on camera images, joint state and z to emit an action chunk" loading="lazy" decoding="async">
+                            <figcaption>Fig. 2: ACT architecture. During training, a compact CVAE encoder distills each demonstration&rsquo;s action sequence and joint state into a latent style variable <em>z</em>. During inference, <em>z</em> is set to zero, enabling the decoder to produce its primary trajectory estimate. Each camera view is processed by a ResNet-18 with positional embeddings; the resulting visual features, joint state, and latent variable are fused into transformer encoder memory. The decoder then cross-attends to that memory and emits <em>k</em> actions in one forward pass. (Zhao et al., 2023. <a href="https://arxiv.org/abs/2304.13705" target="_blank" rel="noopener">arXiv:2304.13705</a>)</figcaption>
+                        </figure>
+                    </div>
+                </div>
+
+                <h3>Architecture</h3>
+                <p class="section-lede">The policy is built as a compact perception-to-action stack. Vision is encoded once, the current state is fused into a shared context, and the decoder turns that context into a short, coordinated action sequence.</p>
+                <ol>
+                    <li><strong>Vision backbone: ResNet-18.</strong> Each camera view passes through a shared, ImageNet-initialised ResNet-18, producing a compact grid of visual features with positional embeddings. The backbone is intentionally task-agnostic: it provides visual representation, not task-specific rules for the arm or object.</li>
+                    <li><strong>Transformer encoder: shared context.</strong> The encoder combines visual features, current joint positions, and the learned latent variable into a single context representation. It does not issue commands; it establishes the information the action decoder can attend to.</li>
+                    <li><strong>Transformer decoder: action generation.</strong> The decoder cross-attends to that context and predicts a coherent sequence of joint commands, one action for each step in the chunk.</li>
+                </ol>
+
+                <h3>What goes in, what comes out</h3>
+                <ul>
+                    <li><strong>Inputs:</strong> multiple RGB images, here a wrist view and a front/top view, the current robot joint positions, and a latent style variable <em>z</em>. The latent variable is learned during training and set to zero during inference.</li>
+                    <li><strong>Outputs:</strong> a chunk of <em>k</em> future actions. LeRobot&rsquo;s <code>chunk_size</code> defaults to 100, so one forward pass returns 100 future joint-command steps rather than a single next step.</li>
+                </ul>
+
+                <p>At the heart of it is an encoder&ndash;decoder transformer: provide an image, the current robot state, and the optional style variable <em>z</em>, and it returns the next <code>chunk_size</code> actions. The decoder is not given a trajectory to copy. Instead, it receives learned embeddings for each step in the chunk. As these embeddings are transformed in the context of the encoder&rsquo;s memory, they become the actions that form the predicted trajectory. In short, action chunking generates a coordinated sequence from embeddings conditioned on the current observation.</p>
+
+                <p>The policy is compact, with roughly 80M parameters in this configuration, making it suitable for overnight fine-tuning on a single laptop GPU. It is not a vision-language-action model: there is no language prompt or generalist backbone. It is a task-specific imitation-learning policy trained end to end on demonstrations collected for this task.</p>
+                <p>ACT&rsquo;s default <code>temporal_ensemble_coeff</code> is <code>None</code>; temporal ensembling is opt-in, not automatic. Since this run used LeRobot&rsquo;s defaults, inference used <strong>plain chunked execution</strong>: each forward pass emitted a chunk of actions, the arm executed it, and a fresh chunk was predicted from the next observation. The overlapping, exponentially blended strategy in Fig. 3 was not used in this run; the figure is included to show an alternative supported by ACT.</p>
+
+                <div class="gallery">
+                    <div class="gallery-grid gallery-grid--stack">
+                        <figure style="max-width: 60%; margin-inline: auto;">
+                            <img src="./assets/img/act/act-temporal-ensemble.png" alt="Two action-chunking schemes compared: plain action chunking executes disjoint blocks of predicted actions, while temporal ensembling blends overlapping chunks with exponentially decaying weights" loading="lazy" decoding="async">
+                            <figcaption>Fig. 3: Two execution strategies for an action chunk. The upper panel shows plain action chunking, used in this run, where each fresh chunk replaces the previous one and is executed as a disjoint action block. The lower panel shows temporal ensembling, where overlapping predictions are blended with exponentially decaying weights, as described by Zhao et al. (2023). This strategy requires querying the policy at every step (<code>n_action_steps = 1</code>). <a href="https://arxiv.org/abs/2304.13705" target="_blank" rel="noopener">arXiv:2304.13705</a></figcaption>
+                        </figure>
+                    </div>
+                </div>
+                <div class="gallery">
+                    <div class="gallery-grid" style="align-items: start;">
+                        <figure style="max-width: 380px; margin-inline: auto;">
+                            <img src="./assets/img/act/follower-cameras.jpg" alt="The follower arm with its top-down camera mounted on the frame above the workspace and its wrist-mounted camera attached to the gripper" loading="lazy" decoding="async">
+                            <figcaption>Fig. 4: The follower arm and its two observation streams: a top-down workspace camera and a wrist-mounted gripper camera. The wrist view supports fine alignment, while the top view preserves scene context when the object leaves the wrist-camera frame.</figcaption>
+                        </figure>
+                        <div class="key-details" style="margin: 0;">
+                            <div class="key-details-grid" style="grid-template-columns: 1fr;">
+                                <div class="detail-card">
+                                    <h3>Observations</h3>
+                                    <ul>
+                                        <li>Two RGB streams: a top-down view and a wrist-mounted view, 640&times;480 @ 30&nbsp;fps.</li>
+                                        <li>The arm&rsquo;s current joint positions, providing proprioceptive state at every timestep.</li>
+                                        <li>That is the entire observation: no depth, no force or tactile sensing, no language prompt, no simulator state.</li>
+                                    </ul>
+                                </div>
+                                <div class="detail-card">
+                                    <h3>Actions</h3>
+                                    <ul>
+                                        <li>Joint commands recorded during SO-101 leader-arm teleoperation. These demonstrations provide the target actions for supervised policy learning.</li>
+                                        <li>Predicted as a chunk, not one step at a time: a single forward pass returns the next <code>chunk_size</code> steps (LeRobot&rsquo;s default is 100), and the arm executes that block before re-planning.</li>
+                                        <li>The style variable <em>z</em> is the one input that only exists at training time; at inference it is zeroed out, so the observation above is all the policy gets.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Data Collection</h2>
+                <p class="section-lede">45 episodes, recorded via teleoperation into a LeRobot dataset. At this scale, every episode carries weight where inconsistent grasps or start poses get learned as part of the task, and whatever position/lighting variation exists across the 45 episodes is roughly the variation the policy has any reason to handle.</p>
+
+                <div class="gallery">
+                    <div class="gallery-grid gallery-grid--stack">
+                        <figure>
+                            <video src="./assets/img/act/teleop.mp4" autoplay muted loop playsinline preload="metadata" aria-label="One teleoperated demonstration being recorded into a LeRobot dataset"></video>
+                            <figcaption>Video 2: Teleoperated demonstration capture. The hand-guided leader arm controls the follower while both camera streams and proprioceptive state are recorded into the LeRobot dataset.</figcaption>
+                        </figure>
+                    </div>
+                </div>
+
+                <p class="section-lede">Teleoperation &rarr; 45 Episodes &rarr; LeRobot Dataset &rarr; ACT Training &rarr; Trained Policy &rarr; SO-101 Inference</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Training</h2>
+                <p class="section-lede">Standard supervised learning on demonstrations: sample a batch, compare the policy&rsquo;s predicted action chunk against what the human actually did, update the weights. Repeat 40,000 times.</p>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <caption>Training configuration</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Parameter</th>
+                                <th scope="col">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Policy</td><td>ACT</td></tr>
+                            <tr><td>Training steps</td><td>40,000</td></tr>
+                            <tr><td>Batch size</td><td>8</td></tr>
+                            <tr><td>Hardware</td><td>NVIDIA RTX 3060 Laptop GPU</td></tr>
+                            <tr><td>Training time</td><td>7h 14m (434 min)</td></tr>
+                            <tr><td>Final objective value</td><td>0.0845</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>No cloud GPU or workstation was required. A mid-range laptop GPU was sufficient for this experimental scale.</p>
+
+                <div class="gallery">
+                    <div class="gallery-grid">
+                        <figure>
+                            <img src="./assets/img/act/train-loss.png" alt="Total training loss over 40,000 steps on a 0 to 6 axis: a near-vertical drop in the first three to four thousand steps followed by a long flat plateau" loading="lazy" decoding="async">
+                            <figcaption>Fig. 5: Total training objective. The objective drops sharply during the first approximately 3,000 to 4,000 steps, reaches a near-plateau by 10,000 steps, and remains nearly flat through step 40,000, ending at 0.0845.</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="./assets/img/act/l1_loss.png" alt="L1 action-reconstruction loss over 40,000 steps on its own zoomed axis from about 0.1 to 0.55: a fast initial drop followed by a long slow decline from roughly 0.16 at 10,000 steps to roughly 0.08 at 40,000 steps" loading="lazy" decoding="async">
+                            <figcaption>Fig. 6: L1 action-reconstruction objective. On a dedicated, zoomed axis, this component continues to decline from approximately 0.16 at 10,000 steps to approximately 0.08 at 40,000 steps, without reaching a clear plateau.</figcaption>
+                        </figure>
+                    </div>
+                    <p class="table-note">Same run, two y-scales. ACT&rsquo;s total loss is the L1 action-reconstruction loss plus a weighted KL term on the latent style variable <em>z</em> (<code>kl_weight</code> is 10 by default). Zoomed in on the L1 term alone, the &ldquo;plateau&rdquo; in Fig. 5 turns out to be a long, slow, steady decline.</p>
+                </div>
+
+                <p>That difference matters when interpreting the evaluation result. Approximately 75% of this training run produced little additional reduction in the <em>total</em> objective: it fell from approximately 7 to below 1 during the first 4,000 steps, then declined gradually to 0.0845 at step 40,000. Fig. 6 provides the more informative view of the late-stage updates. The L1 term continued to decrease from approximately 0.16 at 10,000 steps to 0.10 at 25,000 and 0.08 at 40,000, ending within one thousandth of the total objective. This indicates that nearly all residual error was associated with action regression on the demonstrated positions rather than the latent style term. Combined with reliable in-distribution execution and complete failure under several-centimeter out-of-distribution shifts, the more likely interpretation is not insufficient optimization. The additional steps appear to have improved fit to the 45 demonstrated positions without producing a position-invariant grasp strategy.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Challenges</h2>
+
+                <div class="key-details">
+                    <div class="key-details-grid">
+                        <div class="detail-card">
+                            <h3>Structural to ACT-style imitation learning</h3>
+                            <p class="table-note">(properties of the approach, not this specific run)</p>
+                            <ul>
+                                <li>Competence is bounded by the situations present in the dataset; fine on the training distribution, uncertain just outside it.</li>
+                                <li>Teleoperated data carries human noise: hesitation, small corrections, varying grasp approach.</li>
+                                <li>Grasping is contact-rich and unforgiving of small positional errors.</li>
+                                <li>The policy is coupled to the exact camera viewpoint(s) it trained on.</li>
+                            </ul>
+                        </div>
+                        <div class="detail-card">
+                            <h3>Specific to this run</h3>
+                            <ul>
+                                <li>Grasp execution was imprecise in 2 of 10 in-distribution episodes. The policy reached and closed on the object, but placement fell just short of the bin.</li>
+                                <li>At the boundary of the in-distribution workspace region, the policy made a second grasp attempt rather than committing once. It failed while attempting to recover, rather than failing silently.</li>
+                                <li>In one recorded case, that behavior produced a successful recovery: the arm made <strong>three</strong> grasp attempts at an out-of-distribution placement. The first two attempts did not secure a grasp, but each moved the object closer to the demonstrated workspace region. By the third attempt, the sharpener had effectively returned to the in-distribution region and was grasped cleanly.</li>
+                                <li>A wrist-camera dropout during one episode did not terminate the rollout. This is a single observation, not evidence of general robustness.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gallery">
+                    <div class="gallery-grid gallery-grid--stack">
+                        <figure>
+                            <video src="./assets/img/act/re-attempt.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Three grasp attempts on an out-of-distribution sharpener placement; the first two move it toward the demonstrated workspace region and the arm succeeds on the third"></video>
+                            <figcaption>Video 3: Three grasp attempts under an out-of-distribution placement. The first two attempts do not secure a grip, but each moves the object closer to the demonstrated workspace region. By the third attempt, it is effectively in-distribution and the arm grasps it cleanly.</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Evaluation &amp; Results</h2>
+                <p class="section-lede">Checkpoint step 40,000, 14 real-robot rollouts (<code>lerobot-rollout</code>, episodic strategy).</p>
+
+                <div class="gallery">
+                    <div class="gallery-grid gallery-grid--stack">
+                        <figure>
+                            <video src="./assets/img/act/eval-fail.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Representative failure clip: the object is placed outside the in-distribution workspace region and the rollout fails"></video>
+                            <figcaption>Video 4: Full failure at checkpoint 40,000. The object is placed outside the in-distribution workspace region, and the rollout does not recover. See episodes 5, 8, 9, and 11 below.</figcaption>
+                        </figure>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <caption>Per-episode outcomes</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Ep #</th>
+                                <th scope="col">Position</th>
+                                <th scope="col">Outcome</th>
+                                <th scope="col">Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>0</td><td>in-distribution</td><td class="best">Pass</td><td>Not applicable</td></tr>
+                            <tr><td>1</td><td>in-distribution</td><td class="best">Pass</td><td>Not applicable</td></tr>
+                            <tr><td>2</td><td>in-distribution</td><td class="best">Pass</td><td>Not applicable</td></tr>
+                            <tr><td>3</td><td>in-distribution</td><td class="best">Pass</td><td>Not applicable</td></tr>
+                            <tr><td>4</td><td>in-distribution</td><td class="best">Pass</td><td>Not applicable</td></tr>
+                            <tr><td>5</td><td>out-of-distribution, shifted 2&ndash;3 cm</td><td>Fail</td><td>outside demonstrated workspace region</td></tr>
+                            <tr><td>6</td><td>in-distribution</td><td class="best">Pass</td><td>wrist camera froze mid-episode; succeeded despite the dropout</td></tr>
+                            <tr><td>7</td><td>in-distribution</td><td>Partial</td><td>grasped, but placement missed the bin due to imprecise placement</td></tr>
+                            <tr><td>8</td><td>edge of range</td><td>Fail</td><td>two grasp attempts, both unsuccessful</td></tr>
+                            <tr><td>9</td><td>edge of range</td><td>Fail</td><td>two grasp attempts, both unsuccessful</td></tr>
+                            <tr><td>10</td><td>in-distribution</td><td>Partial</td><td>grasped, but placement missed the bin due to imprecise placement</td></tr>
+                            <tr><td>11</td><td>edge of range</td><td>Fail</td><td>timed out on second attempt, object at gripper&rsquo;s reach limit</td></tr>
+                            <tr><td>12</td><td>in-distribution</td><td class="best">Pass</td><td>Not applicable</td></tr>
+                            <tr><td>13</td><td>in-distribution</td><td class="best">Pass</td><td>Not applicable</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p><strong>Aggregate:</strong></p>
+                <ul>
+                    <li>Overall: 8 Pass (57%), 2 Partial (14%), 4 Fail (29%)</li>
+                    <li><strong>In-distribution placements (10 episodes): 8 Pass, 2 Partial, 0 Fail.</strong> Every episode moved the object off the table and near the bin.</li>
+                    <li><strong>Boundary or out-of-distribution placements (4 episodes): 0 Pass, 0 Partial, 4 Fail.</strong> The policy achieved no successful placement once the object left the demonstrated distribution.</li>
+                </ul>
+
+                <p><strong>Failure-mode tally (4 full failures):</strong></p>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Cause</th>
+                                <th scope="col">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Out-of-distribution object placement</td><td>4 / 4</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p><strong>Secondary issue (2 partial passes, both in-range):</strong></p>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Cause</th>
+                                <th scope="col">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Imprecise grasp/placement technique</td><td>2 / 2</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="key-details">
+                    <div class="key-details-grid">
+                        <div class="detail-card">
+                            <h3>What worked / didn&rsquo;t / surprised</h3>
+                            <ul>
+                                <li><strong>Worked:</strong> in-distribution placements. All 10 such episodes ended with the object grasped and delivered at least near the bin.</li>
+                                <li><strong>Did not work:</strong> out-of-distribution placements. There were <em>zero</em> successful outcomes across all 4 attempts, indicating a hard boundary rather than a gradual performance decline.</li>
+                                <li><strong>Notable behavior:</strong> at boundary placements, the policy attempted a second grasp in episodes 8, 9, and 11 rather than freezing. It did not reliably recover because the required behavior was not represented in the demonstrations. In Video 3, repeated attempts incidentally moved an out-of-distribution object back into the demonstrated region, enabling a successful third attempt. A wrist-camera dropout in episode 6 also did not cause failure. Both observations are isolated anecdotes, not robustness claims.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Limitations</h3>
+                <p>Forty-five episodes constitute a small, single-condition dataset. The observed position sensitivity is consistent with that data regime: the policy reproduces demonstrated behavior effectively but has limited tolerance for unseen placements. This is not evidence of a limitation specific to ACT. It is the expected consequence of narrow workspace coverage and motivates collecting a second demonstration batch with deliberate positional variation before evaluating the architecture more broadly.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Key Takeaways</h2>
+                <ul>
+                    <li><strong>Workspace coverage in the demonstrations, not model capacity, was the bottleneck here:</strong> 100% success for in-distribution placements and 0% for nearby out-of-distribution placements provide a clear demonstration.</li>
+                    <li>A flat training loss is not the same signal as a generalizing policy and loss plateaued by ~10k steps, but that only measures fit to the 45 demonstrated positions, not tolerance for anything else.</li>
+                    <li>Action chunking produced deliberate, committed motion rather than jittery re-planning; no complaints about the execution itself, only its coverage.</li>
+                    <li>A consumer laptop GPU (RTX 3060) trained this policy in about 7 hours; no cloud spend required to get a real result.</li>
+                    <li>The only trustworthy evaluation signal was repeated, honestly-logged real-robot trials and the aggregate number alone (57%) would have hidden the actual finding (a hard position boundary) that the per-episode breakdown revealed.</li>
+                </ul>
+            </div>
+
+            <div class="project-section">
+                <h2>Appendix</h2>
+                <ul>
+                    <li>Model: <a href="https://huggingface.co/utkarshsheel/act_V4.5_Sharpener" target="_blank" rel="noopener">https://huggingface.co/utkarshsheel/act_V4.5_Sharpener</a></li>
+                    <li>Dataset: <a href="https://huggingface.co/datasets/utkarshsheel/V4.5_Sharpener_20260907_003254" target="_blank" rel="noopener">https://huggingface.co/datasets/utkarshsheel/V4.5_Sharpener_20260907_003254</a></li>
+                    <li>ACT paper: <em>Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware</em> (Zhao et al., 2023). <a href="https://arxiv.org/abs/2304.13705" target="_blank" rel="noopener">arXiv:2304.13705</a></li>
+                    <li>LeRobot: <a href="https://github.com/huggingface/lerobot" target="_blank" rel="noopener">https://github.com/huggingface/lerobot</a></li>
+                    <li>LeRobot documentation: <a href="https://huggingface.co/docs/lerobot" target="_blank" rel="noopener">https://huggingface.co/docs/lerobot</a></li>
+                    <li>SO-ARM101: <a href="https://github.com/TheRobotStudio/SO-ARM100" target="_blank" rel="noopener">https://github.com/TheRobotStudio/SO-ARM100</a></li>
+                </ul>
+            </div>
+
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">&larr; Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <a href="./index.html" class="footer-brand">Utkarsh Sheel Anand</a>
+                <ul class="footer-nav">
+                    <li><a href="./index.html">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span data-year>2025</span> Utkarsh Sheel Anand. All rights reserved.</p>
+                <ul class="social-links">
+                    <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

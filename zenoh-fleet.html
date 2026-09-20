@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenohFleet | Utkarsh Sheel Anand</title>
+    <meta name="description" content="A two-machine ROS 2 and Zenoh demonstration with a ROS-free macOS ground station, CDR message decoding, YOLOv8n detection, and a return control path.">
+    <meta name="theme-color" content="#0B0E14">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dexut.github.io/devut.github.io/zenoh-fleet.html">
+    <meta property="og:title" content="ZenohFleet | Utkarsh Sheel Anand">
+    <meta property="og:description" content="A two-machine ROS 2 and Zenoh demonstration with a ROS-free macOS ground station, CDR message decoding, YOLOv8n detection, and a return control path.">
+    <meta property="og:image" content="https://dexut.github.io/devut.github.io/assets/img/zenoh/demo-still.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script>document.documentElement.classList.add('js');</script>
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav" aria-label="Primary">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active" aria-current="page">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page" data-category="robotics">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>ZenohFleet</span>
+            </nav>
+
+            <div class="project-header">
+                <span class="project-category-tag">Robotics</span>
+                <h1>ZenohFleet</h1>
+            </div>
+
+            <p class="project-abstract">I built and tested a two-machine ROS 2 and Zenoh system with a robot running Ubuntu and a ground station running macOS. The robot publishes compressed camera frames and simulated odometry through <code>zenoh-bridge-ros2dds</code>. The ground station has no ROS 2 installation. It uses <code>rosbags</code> to decode the CDR messages, runs YOLOv8n on the incoming video, and sends a real serialized <code>geometry_msgs/Twist</code> message back to the robot. The robot&rsquo;s control node logs whether it receives moving or stopped commands. The main result is that the bridge can carry existing ROS 2 CDR payloads to a client that does not use <code>rclpy</code>, while the return path still works when the client constructs the correct ROS 2 message type.</p>
+
+            <a href="https://github.com/Utkarsh-Sheel-A/ros2-zenoh-fleet" class="btn btn-primary btn-external" target="_blank" rel="noopener">View on GitHub</a>
+
+            <div class="key-details">
+                <div class="key-details-grid">
+                    <div class="detail-card">
+                        <h3>System Architecture</h3>
+                        <ul>
+                            <li><strong>Robot:</strong> Ubuntu with ROS 2 Humble and three <code>ament_python</code> nodes. The camera node publishes a looping driving clip as <code>sensor_msgs/CompressedImage</code> at 10&nbsp;Hz. The telemetry node publishes a simulated 2&nbsp;m-radius circular trajectory as <code>nav_msgs/Odometry</code> at 5&nbsp;Hz. The control node subscribes to <code>/cmd_vel</code> and logs received commands.</li>
+                            <li><strong>Bridge:</strong> <code>zenoh-bridge-ros2dds</code> runs in router mode on <code>tcp/0.0.0.0:7447</code> and mirrors the ROS 2 topics onto Zenoh keys.</li>
+                            <li><strong>Ground station:</strong> Python processes on macOS open a Zenoh session, decode incoming messages, display the video, run object detection, and publish commands back to the robot. ROS 2 is not installed on this machine.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Payloads</h3>
+                        <ul>
+                            <li>The bridge performs <strong>no format translation</strong>. It forwards the bytes associated with each bridged key.</li>
+                            <li><strong>Robot to station:</strong> the station receives serialized ROS 2 messages in CDR format and decodes them with <code>rosbags</code>&rsquo; typestore.</li>
+                            <li><strong>Station to robot:</strong> the station creates a <code>geometry_msgs/Twist</code>, serializes it to CDR, and publishes it. A JSON payload would not be a valid <code>/cmd_vel</code> message.</li>
+                            <li>ROS topics use CDR, while <code>detections</code> uses JSON and <code>annotated_image</code> uses raw JPEG as Zenoh-native payloads.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Tools</h3>
+                        <ul>
+                            <li><code>zenoh-bridge-ros2dds</code> on the robot and the Eclipse Zenoh Python API on both machines.</li>
+                            <li>ROS 2 Humble with three <code>ament_python</code> packages, <code>rclpy</code>, and <code>colcon</code>.</li>
+                            <li>Python 3.11, <code>rosbags</code>, OpenCV, NumPy, Ultralytics YOLOv8n, and <code>psutil</code> on the ground station.</li>
+                            <li>The system monitor uses Zenoh directly and does not depend on ROS 2.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Tested Scope</h3>
+                        <ul>
+                            <li><strong>Implemented and tested on a clean LAN:</strong> camera and telemetry nodes, bridging, ROS-free CDR decoding on macOS, YOLOv8n inference, Zenoh-native detections and annotated video, the CDR-encoded <code>cmd_vel</code> return path, and the system monitor.</li>
+                            <li><strong>Demonstration only:</strong> the control node logs received commands. No motors are connected.</li>
+                            <li>WAN resilience and performance relative to DDS were not measured. The current result is limited to the tested LAN setup.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Message Flow</h2>
+                <p class="section-lede">The table shows the payloads, ROS 2 topics, and Zenoh keys used in the tested system.</p>
+                <p>On the robot, the camera and telemetry nodes publish standard ROS 2 topics. The bridge exposes those topics as Zenoh keys and forwards the serialized payloads. The ground station subscribes to the keys, decodes the messages, runs detection, and publishes the return command as a serialized <code>geometry_msgs/Twist</code>. Detection results, annotated frames, and system statistics use Zenoh-native keys.</p>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <caption>Payloads and Zenoh keys on the tested path</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Purpose</th>
+                                <th scope="col">ROS 2 topic</th>
+                                <th scope="col">Zenoh key</th>
+                                <th scope="col">Payload</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Camera</td><td><code>/camera/image_compressed</code></td><td><code>camera/image_compressed</code></td><td>CDR <code>sensor_msgs/CompressedImage</code></td></tr>
+                            <tr><td>Odometry</td><td><code>/odom</code></td><td><code>odom</code></td><td>CDR <code>nav_msgs/Odometry</code></td></tr>
+                            <tr><td>Control</td><td><code>/cmd_vel</code></td><td><code>cmd_vel</code></td><td>CDR <code>geometry_msgs/Twist</code></td></tr>
+                            <tr><td>Detections</td><td>N/A</td><td><code>detections</code></td><td>JSON list (Zenoh-native)</td></tr>
+                            <tr><td>Annotated image</td><td>N/A</td><td><code>annotated_image</code></td><td>Raw JPEG (Zenoh-native)</td></tr>
+                            <tr><td>CPU percent</td><td>N/A</td><td><code>robot1/system/cpu_percent</code></td><td>ASCII float (Zenoh-native)</td></tr>
+                            <tr><td>Memory percent</td><td>N/A</td><td><code>robot1/system/mem_percent</code></td><td>ASCII float (Zenoh-native)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-note">These are the keys used in the tested path. The bridge runs without a namespace, while the <code>robot1/</code> prefix in the system-monitor keys is part of the key name itself.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Key Takeaways</h2>
+                <p class="section-lede">Three conclusions from building and testing the communication path.</p>
+
+                <div class="key-details">
+                    <div class="key-details-grid">
+                        <div class="detail-card">
+                            <h3>CDR works without ROS 2</h3>
+                            <ul>
+                                <li>The bridge forwards the serialized CDR payloads produced by DDS, so the macOS station can decode <code>CompressedImage</code> and <code>Odometry</code> without <code>rclpy</code> or a ROS 2 installation.</li>
+                                <li>The same approach works in the other direction when the station creates and serializes a valid <code>geometry_msgs/Twist</code>.</li>
+                            </ul>
+                        </div>
+
+                        <div class="detail-card">
+                            <h3>Payloads and threads need explicit handling</h3>
+                            <ul>
+                                <li>ROS 2 topics use CDR, while detection results and annotated frames use Zenoh-native JSON and JPEG payloads.</li>
+                                <li>Zenoh callbacks run in the background, so the macOS viewers pass frames through a single-slot queue before calling <code>cv2.imshow()</code> on the main thread.</li>
+                            </ul>
+                        </div>
+
+                        <div class="detail-card">
+                            <h3>Scope of the demonstration</h3>
+                            <ul>
+                                <li>The system was tested on one clean LAN. It demonstrates message interoperability and a working return path, not WAN resilience or performance relative to DDS.</li>
+                                <li>Detection and annotated-image traffic currently passes through the Ubuntu bridge, and the control node only logs commands because no motors are connected.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery">
+                <h2>Live Demo</h2>
+                <p class="section-lede">Two recorded runs of the two-machine loop. Each clip shows the annotated YOLO feed beside the robot-side terminal, where the control log changes between <code>[MOVING]</code> and <code>[STOPPED]</code>.</p>
+                <div class="gallery-grid gallery-grid--stack">
+                    <figure>
+                        <video src="./assets/img/zenoh/demo-run1.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Run 1 of the ZenohFleet demo: annotated YOLO feed on the macOS ground station beside the robot-side control node log"></video>
+                        <figcaption>Run 1. Annotated detection feed on the macOS ground station beside the robot&rsquo;s <code>control_node</code> log receiving <code>cmd_vel</code> over Zenoh. Approximately 36&nbsp;s.</figcaption>
+                    </figure>
+                    <figure>
+                        <video src="./assets/img/zenoh/demo-run2.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Run 2 of the ZenohFleet demo: person, car and bus detections with the matching robot-side control log"></video>
+                        <figcaption>Run 2. Person, car, and bus detections appear in the video with the corresponding robot-side control log. Approximately 48&nbsp;s.</figcaption>
+                    </figure>
+                </div>
+                <p class="table-note">Both clips show the live Ubuntu robot and macOS ground station running on a clean LAN. The control node logs received commands; no motors are attached.</p>
+            </div>
+
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">← Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <a href="./index.html" class="footer-brand">Utkarsh Sheel Anand</a>
+                <ul class="footer-nav">
+                    <li><a href="./index.html">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span data-year>2025</span> Utkarsh Sheel Anand. All rights reserved.</p>
+                <ul class="social-links">
+                    <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

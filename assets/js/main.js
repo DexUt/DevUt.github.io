@@ -1,3 +1,7 @@
+/* Mark the document as JS-enabled as early as possible so scroll animations
+   only hide content when JavaScript can reveal it again. */
+document.documentElement.classList.add('js');
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Smart Header ---
@@ -5,14 +9,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const header = document.querySelector('.site-header');
         if (!header) return;
 
-        // Add initial transparent class
+        const hasHero = !!document.querySelector('.hero');
+
+        // Pages without a full-height hero start with a solid header so the
+        // navigation always sits on a readable surface.
+        if (!hasHero) {
+            header.classList.add('site-header--solid');
+            return;
+        }
+
         header.classList.add('site-header--transparent');
 
         const toggleHeader = () => {
-            const scrollY = window.scrollY;
-            const heroHeight = window.innerHeight * 0.6; // Switch at 60% of hero
+            const threshold = window.innerHeight * 0.6;
 
-            if (scrollY > heroHeight) {
+            if (window.scrollY > threshold) {
                 header.classList.remove('site-header--transparent');
                 header.classList.add('site-header--solid');
             } else {
@@ -21,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        // Throttle scroll events for performance
         let ticking = false;
         window.addEventListener('scroll', () => {
             if (!ticking) {
@@ -31,9 +41,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 ticking = true;
             }
-        });
+        }, { passive: true });
 
-        // Initial check
         toggleHeader();
     };
 
@@ -42,57 +51,49 @@ document.addEventListener('DOMContentLoaded', () => {
         const navToggle = document.querySelector('.nav-toggle');
         const primaryNav = document.querySelector('#primary-navigation');
 
-        if (navToggle && primaryNav) {
-            navToggle.addEventListener('click', () => {
-                const isVisible = primaryNav.getAttribute('data-visible') === 'true';
-                primaryNav.setAttribute('data-visible', !isVisible);
-                navToggle.setAttribute('aria-expanded', !isVisible);
+        if (!navToggle || !primaryNav) return;
 
-                // Prevent body scroll when menu is open
-                document.body.style.overflow = isVisible ? '' : 'hidden';
-            });
+        const setOpen = (open) => {
+            primaryNav.setAttribute('data-visible', String(open));
+            navToggle.setAttribute('aria-expanded', String(open));
+            document.body.classList.toggle('nav-open', open);
+        };
 
-            // Close menu when clicking on a link
-            const navLinks = primaryNav.querySelectorAll('a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    primaryNav.setAttribute('data-visible', 'false');
-                    navToggle.setAttribute('aria-expanded', 'false');
-                    document.body.style.overflow = '';
-                });
-            });
-        }
+        navToggle.addEventListener('click', () => {
+            setOpen(primaryNav.getAttribute('data-visible') !== 'true');
+        });
+
+        // Close the menu when a link is chosen or Escape is pressed
+        primaryNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => setOpen(false));
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') setOpen(false);
+        });
     };
 
     // --- Scroll Animations with IntersectionObserver ---
     const initScrollAnimations = () => {
-        const animatedElements = document.querySelectorAll('.animate-on-scroll, .card');
-
+        const animatedElements = document.querySelectorAll('.animate-on-scroll, .card, .stagger-children');
         if (animatedElements.length === 0) return;
 
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.2
-        };
+        // If IntersectionObserver is unavailable, reveal everything.
+        if (!('IntersectionObserver' in window)) {
+            animatedElements.forEach(el => el.classList.add('visible'));
+            return;
+        }
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    // Stop observing once visible (one-time animation)
                     observer.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
+        }, { root: null, rootMargin: '0px', threshold: 0.15 });
 
         animatedElements.forEach(el => observer.observe(el));
-
-        // Handle staggered children
-        const staggerContainers = document.querySelectorAll('.stagger-children');
-        staggerContainers.forEach(container => {
-            observer.observe(container);
-        });
     };
 
     // --- Project Filtering ---
@@ -104,22 +105,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filterTabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                // Update active tab
-                filterTabs.forEach(t => t.classList.remove('active'));
+                filterTabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-pressed', 'false');
+                });
                 tab.classList.add('active');
+                tab.setAttribute('aria-pressed', 'true');
 
                 const filter = tab.getAttribute('data-filter');
 
-                // Filter cards
                 projectCards.forEach(card => {
-                    const categories = card.getAttribute('data-category').split(' ');
+                    const categories = (card.getAttribute('data-category') || '').split(' ');
+                    const matches = filter === 'all' || categories.includes(filter);
 
-                    if (filter === 'all' || categories.includes(filter)) {
+                    if (matches) {
                         card.classList.remove('hidden');
-                        // Small delay for smoother appearance
-                        setTimeout(() => {
-                            card.classList.add('visible');
-                        }, 50);
+                        requestAnimationFrame(() => card.classList.add('visible'));
                     } else {
                         card.classList.add('hidden');
                         card.classList.remove('visible');
@@ -130,58 +131,65 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Project Page Prev/Next Navigation ---
+    // Order mirrors the featured grid: robotics-focused work leads.
     const initProjectNav = () => {
         const projectNavContainer = document.querySelector('.project-nav');
         if (!projectNavContainer) return;
 
         const projects = [
-            'egg-mover.html',
+            'act-so101-sharpener.html',
+            'eskf-sensor-fusion.html',
+            'zenoh-fleet.html',
+            'ppo-locomotion.html',
             'ros2-mobile-robot.html',
-            'weather-satellite.html',
-            'low-cost-gc.html',
-            'heat-sink.html',
-            'light-sport-aircraft.html',
             'drone-project.html',
+            'egg-mover.html',
+            'quick-return.html',
             'spacecraft-control.html',
-            'quick-return.html'
+            'weather-satellite.html',
+            'light-sport-aircraft.html',
+            'low-cost-gc.html',
+            'heat-sink.html'
         ];
 
         const titles = {
-            'egg-mover.html': 'Egg Mover Project',
             'ros2-mobile-robot.html': 'ROS2 Mobile Robot',
-            'weather-satellite.html': 'Weather Satellite',
-            'low-cost-gc.html': 'Low Cost GC',
-            'heat-sink.html': 'Heat Sink',
-            'light-sport-aircraft.html': 'Light Sport Aircraft',
             'drone-project.html': 'Drone Project',
+            'egg-mover.html': 'Egg Mover Project',
+            'quick-return.html': 'Quick-Return Dynamics',
             'spacecraft-control.html': 'Spacecraft Attitude Dynamics and Control',
-            'quick-return.html': 'Crank, Link, Repeat - Quick-Return Dynamics'
+            'weather-satellite.html': 'Weather Satellite',
+            'light-sport-aircraft.html': 'Light Sport Aircraft',
+            'low-cost-gc.html': 'Low Cost Gas Chromatograph',
+            'heat-sink.html': 'Enhanced Heat Sinks',
+            'ppo-locomotion.html': 'PPO Locomotion Study',
+            'zenoh-fleet.html': 'ZenohFleet',
+            'eskf-sensor-fusion.html': 'ESKF Sensor Fusion',
+            'act-so101-sharpener.html': 'ACT Policy on SO-101'
         };
 
-        const currentPage = window.location.pathname.split('/').pop() || projects[1];
+        const currentPage = window.location.pathname.split('/').pop() || projects[0];
         const currentIndex = projects.indexOf(currentPage);
 
-        if (currentIndex !== -1) {
-            const prevLinkContainer = document.querySelector('.prev-link-container');
-            const nextLinkContainer = document.querySelector('.next-link-container');
+        if (currentIndex === -1) return;
 
-            if (currentIndex > 0 && prevLinkContainer) {
-                const prevPage = projects[currentIndex - 1];
-                const prevTitle = titles[prevPage];
-                const prevLink = document.createElement('a');
-                prevLink.href = `./${prevPage}`;
-                prevLink.textContent = `← ${prevTitle}`;
-                prevLinkContainer.appendChild(prevLink);
-            }
+        const prevLinkContainer = document.querySelector('.prev-link-container');
+        const nextLinkContainer = document.querySelector('.next-link-container');
 
-            if (currentIndex < projects.length - 1 && nextLinkContainer) {
-                const nextPage = projects[currentIndex + 1];
-                const nextTitle = titles[nextPage];
-                const nextLink = document.createElement('a');
-                nextLink.href = `./${nextPage}`;
-                nextLink.textContent = `${nextTitle} →`;
-                nextLinkContainer.appendChild(nextLink);
-            }
+        if (currentIndex > 0 && prevLinkContainer) {
+            const prevPage = projects[currentIndex - 1];
+            const prevLink = document.createElement('a');
+            prevLink.href = `./${prevPage}`;
+            prevLink.textContent = `\u2190 ${titles[prevPage]}`;
+            prevLinkContainer.appendChild(prevLink);
+        }
+
+        if (currentIndex < projects.length - 1 && nextLinkContainer) {
+            const nextPage = projects[currentIndex + 1];
+            const nextLink = document.createElement('a');
+            nextLink.href = `./${nextPage}`;
+            nextLink.textContent = `${titles[nextPage]} \u2192`;
+            nextLinkContainer.appendChild(nextLink);
         }
     };
 
@@ -212,18 +220,15 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             let isValid = true;
 
-            // Clear previous errors
             if (nameField) clearError(nameField);
             if (emailField) clearError(emailField);
             if (messageField) clearError(messageField);
 
-            // Validate Name
             if (nameField && nameField.value.trim() === '') {
                 showError(nameField, 'Name cannot be empty.');
                 isValid = false;
             }
 
-            // Validate Email
             if (emailField) {
                 if (emailField.value.trim() === '') {
                     showError(emailField, 'Email cannot be empty.');
@@ -234,7 +239,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Validate Message
             if (messageField && messageField.value.trim() === '') {
                 showError(messageField, 'Message cannot be empty.');
                 isValid = false;
@@ -254,19 +258,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Smooth Scroll for Anchor Links ---
     const initSmoothScroll = () => {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+            anchor.addEventListener('click', function (e) {
                 const href = this.getAttribute('href');
-                if (href !== '#') {
-                    e.preventDefault();
-                    const target = document.querySelector(href);
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                }
+                if (href === '#') return;
+
+                const target = document.querySelector(href);
+                if (!target) return;
+
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
+        });
+    };
+
+    // --- Footer Year ---
+    const initFooterYear = () => {
+        document.querySelectorAll('[data-year]').forEach(el => {
+            el.textContent = new Date().getFullYear();
         });
     };
 
@@ -278,4 +286,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initProjectNav();
     initContactForm();
     initSmoothScroll();
+    initFooterYear();
 });

@@ -5,7 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Light Sport Aircraft | Utkarsh Sheel Anand</title>
     <meta name="description" content="Details on the Light Sport Aircraft Design Project, an engineering design challenge.">
+    <meta name="theme-color" content="#0B0E14">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dexut.github.io/devut.github.io/light-sport-aircraft.html">
+    <meta property="og:title" content="Light Sport Aircraft | Utkarsh Sheel Anand">
+    <meta property="og:description" content="Details on the Light Sport Aircraft Design Project, an engineering design challenge.">
+    <meta property="og:image" content="https://dexut.github.io/devut.github.io/assets/img/headshot.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/styles.css">
+    <script>document.documentElement.classList.add('js');</script>
     <script src="./assets/js/main.js" defer></script>
 </head>
 <body>
@@ -13,13 +27,13 @@
     <header class="site-header">
         <div class="container">
             <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
-            <nav class="main-nav">
+            <nav class="main-nav" aria-label="Primary">
                 <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
                     <span></span>
                     <span class="sr-only">Menu</span>
                 </button>
                 <ul id="primary-navigation" class="nav-list" data-visible="false">
-                    <li><a href="./index.html" class="active">Work</a></li>
+                    <li><a href="./index.html" class="active" aria-current="page">Work</a></li>
                     <li><a href="./resume.html">Resume</a></li>
                     <li><a href="./contact.html">Contact</a></li>
                 </ul>
@@ -27,7 +41,7 @@
         </div>
     </header>
 
-    <main id="main-content" class="project-page">
+    <main id="main-content" class="project-page" data-category="aerospace">
         <div class="container">
             <nav class="breadcrumbs">
                 <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>Light Sport Aircraft</span>
@@ -73,6 +87,16 @@
             </div>
 
             <div class="pdf-viewer">
+                <div class="pdf-frame-bar">
+                    <span class="pdf-frame-name">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M14 3v4.5a1.5 1.5 0 0 0 1.5 1.5H20"/>
+                            <path d="M19.5 9.2V19a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.1z"/>
+                        </svg>
+                        light-sport-aircraft.pdf
+                    </span>
+                    <span class="pdf-frame-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                </div>
                 <iframe src="./reports/light-sport-aircraft.pdf" title="Light Sport Aircraft Design PDF" loading="lazy"></iframe>
                 <p><a href="./reports/light-sport-aircraft.pdf" target="_blank" rel="noopener">Download the PDF</a></p>
             </div>
@@ -89,11 +113,21 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; 2025 Utkarsh Sheel Anand. All rights reserved.</p>
-            <ul class="social-links">
-                <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
-                <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
-            </ul>
+            <div class="footer-top">
+                <a href="./index.html" class="footer-brand">Utkarsh Sheel Anand</a>
+                <ul class="footer-nav">
+                    <li><a href="./index.html">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span data-year>2025</span> Utkarsh Sheel Anand. All rights reserved.</p>
+                <ul class="social-links">
+                    <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+                </ul>
+            </div>
         </div>
     </footer>
 </body>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPO Locomotion Study | Utkarsh Sheel Anand</title>
+    <meta name="description" content="A graduate-level study of PPO on four MuJoCo locomotion tasks, comparing learning rates, random seeds, and rollout lengths across eight training runs.">
+    <meta name="theme-color" content="#0B0E14">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dexut.github.io/devut.github.io/ppo-locomotion.html">
+    <meta property="og:title" content="PPO Locomotion Study | Utkarsh Sheel Anand">
+    <meta property="og:description" content="A graduate-level study of PPO on four MuJoCo locomotion tasks, comparing learning rates, random seeds, and rollout lengths across eight training runs.">
+    <meta property="og:image" content="https://dexut.github.io/devut.github.io/assets/img/ppo/learning-curves.png">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script>document.documentElement.classList.add('js');</script>
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav" aria-label="Primary">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active" aria-current="page">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page" data-category="machine-learning robotics">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>PPO Locomotion Study</span>
+            </nav>
+
+            <div class="project-header">
+                <span class="project-category-tag">Machine Learning &middot; Robotics</span>
+                <h1>PPO Locomotion Study</h1>
+            </div>
+
+            <p class="project-abstract">This study evaluates Proximal Policy Optimization (PPO) with Stable-Baselines3 on four continuous-control MuJoCo locomotion tasks: Hopper, Walker2d, Ant, and Humanoid. Across eight runs and 27M environment steps, each experiment follows the same evaluation protocol. A deterministic ten-episode evaluation runs approximately every 10k steps to identify the best checkpoint, which is then re-evaluated over 20 deterministic episodes using frozen observation-normalisation statistics and raw, unnormalised rewards. The study compares two learning rates on Ant and Humanoid, tests seed sensitivity for the best Humanoid configuration, and evaluates two rollout lengths on Ant. The main result is that learning rate strongly affects final performance. On Humanoid, lr 3e-4 converged to a local optimum near 850 reward, while lr 1e-4 reached 4&nbsp;451 &plusmn; 1&nbsp;556.</p>
+
+            <a href="https://github.com/Utkarsh-Sheel-A/ppo-locomotion-study" class="btn btn-primary btn-external" target="_blank" rel="noopener">View on GitHub</a>
+
+            <div class="key-details">
+                <div class="key-details-grid">
+                    <div class="detail-card">
+                        <h3>Methods</h3>
+                        <ul>
+                            <li>PPO uses a clipped surrogate objective (&epsilon; = 0.2) and GAE (&gamma; = 0.99, &lambda; = 0.95), with a policy and value MLP consisting of two 64-unit tanh layers.</li>
+                            <li>Every run uses four parallel environments and 1024 rollout steps, producing 4096 fresh on-policy transitions per update. Each rollout supports 16 minibatches and 10 epochs, or 160 gradient updates with batch size 256.</li>
+                            <li><code>VecNormalize</code> normalises observations and rewards during training, with a clip value of 10. Evaluation uses frozen observation statistics and raw, unnormalised rewards.</li>
+                            <li>Only one hyperparameter is varied in each controlled comparison, and all values are specified explicitly in the training scripts.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Tools</h3>
+                        <ul>
+                            <li>Python, Stable-Baselines3 2.9, PyTorch 2.13, Gymnasium/MuJoCo v5, TensorBoard, NumPy, and Matplotlib.</li>
+                            <li>Each environment follows a train, evaluate, and record pipeline with per-run checkpoints and TensorBoard logs.</li>
+                            <li><code>analyze_ppo.py</code> rebuilds the tables and figures from raw run artifacts, while <code>final_eval.py</code> repeats the 20-episode evaluation for any checkpoint.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Evaluation Protocol</h3>
+                        <ul>
+                            <li>During training, <code>EvalCallback</code> runs ten deterministic episodes approximately every 10k steps and saves the checkpoint with the highest evaluation reward.</li>
+                            <li>Each best checkpoint is re-evaluated over 20 deterministic episodes in an environment initialised with seed 2024.</li>
+                            <li>The protocol is identical across all eight runs, allowing direct comparison between configurations and environments.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Outcome</h3>
+                        <ul>
+                            <li>The best final scores were 3&nbsp;486 &plusmn; 5 on Hopper, 6&nbsp;008 &plusmn; 27 on Walker2d, 3&nbsp;147 &plusmn; 645 on Ant with <code>n_steps = 2048</code>, and 4&nbsp;451 &plusmn; 1&nbsp;556 on Humanoid with lr 1e-4 and seed 7.</li>
+                            <li>The lower learning rate performed better in both comparisons: by 1&nbsp;323 reward on Ant and 3&nbsp;311 reward on Humanoid relative to lr 3e-4.</li>
+                            <li>PPO diagnostics indicate failure before the reward curves make it obvious. The best Humanoid run approaches its trust-region boundary, while the stuck run loses entropy early.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Results</h2>
+                <p class="section-lede">These headline results come from the best checkpoint for each environment, re-evaluated over 20 deterministic episodes with raw, unnormalised reward.</p>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <caption>Best configuration per environment</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Environment</th>
+                                <th scope="col">Task</th>
+                                <th scope="col">Obs / act dims</th>
+                                <th scope="col">Budget</th>
+                                <th scope="col">Best configuration</th>
+                                <th scope="col">Final score (20 episodes)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Hopper-v5</td>
+                                <td>Hop forward on one leg</td>
+                                <td>11 / 3</td>
+                                <td>1M steps</td>
+                                <td>lr 3e-4, seed 42</td>
+                                <td class="best">3&nbsp;486 &plusmn; 5</td>
+                            </tr>
+                            <tr>
+                                <td>Walker2d-v5</td>
+                                <td>Walk forward on two legs</td>
+                                <td>17 / 6</td>
+                                <td>2M steps</td>
+                                <td>lr 3e-4, seed 42</td>
+                                <td class="best">6&nbsp;008 &plusmn; 27</td>
+                            </tr>
+                            <tr>
+                                <td>Ant-v5</td>
+                                <td>Walk with four legs</td>
+                                <td>105 / 8</td>
+                                <td>3M steps</td>
+                                <td>lr 3e-4 + n_steps 2048</td>
+                                <td class="best">3&nbsp;147 &plusmn; 645</td>
+                            </tr>
+                            <tr>
+                                <td>Humanoid-v5</td>
+                                <td>Walk upright, 17 actuators</td>
+                                <td>348 / 17</td>
+                                <td>5M steps</td>
+                                <td>lr 1e-4, seed 7</td>
+                                <td class="best">4&nbsp;451 &plusmn; 1&nbsp;556</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>All Eight Runs</h2>
+                <p class="section-lede">Every run in the study, with both comparison axes (learning rate, rollout length) and the seed check side by side.</p>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <caption>Complete per-run results, covering 27M environment steps in total</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Env</th>
+                                <th scope="col">Run</th>
+                                <th scope="col">lr</th>
+                                <th scope="col">Seed</th>
+                                <th scope="col">n_steps</th>
+                                <th scope="col">Budget</th>
+                                <th scope="col">Best eval</th>
+                                <th scope="col">Final eval (20 eps)</th>
+                                <th scope="col">Steps to 50% of best</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Hopper</td><td>hopper_ppo</td><td>3e-4</td><td>42</td><td>1024</td><td>1M</td><td>3&nbsp;486</td><td class="best">3&nbsp;486 &plusmn; 5</td><td>270 k</td></tr>
+                            <tr><td>Walker2d</td><td>walker2d_ppo</td><td>3e-4</td><td>42</td><td>1024</td><td>2M</td><td>5&nbsp;993</td><td class="best">6&nbsp;008 &plusmn; 27</td><td>970 k</td></tr>
+                            <tr><td>Ant</td><td>ant_ppo_lr1e-04</td><td>1e-4</td><td>42</td><td>1024</td><td>3M</td><td>3&nbsp;095</td><td>3&nbsp;100 &plusmn; 97</td><td>1.41 M</td></tr>
+                            <tr><td>Ant</td><td>ant_ppo_2048_lr3e-04</td><td>3e-4</td><td>42</td><td>2048</td><td>3M</td><td>3&nbsp;018</td><td class="best">3&nbsp;147 &plusmn; 645</td><td>1.74 M</td></tr>
+                            <tr><td>Ant</td><td>ant_ppo_lr3e-04</td><td>3e-4</td><td>42</td><td>1024</td><td>3M</td><td>1&nbsp;771</td><td>1&nbsp;605 &plusmn; 608</td><td>10 k*</td></tr>
+                            <tr><td>Humanoid</td><td>humanoid_ppo_lr1e-04_seed42</td><td>1e-4</td><td>42</td><td>1024</td><td>5M</td><td>5&nbsp;783</td><td>4&nbsp;160 &plusmn; 1&nbsp;525</td><td>1.43 M</td></tr>
+                            <tr><td>Humanoid</td><td>humanoid_ppo_lr1e-04_seed7</td><td>1e-4</td><td>7</td><td>1024</td><td>5M</td><td>5&nbsp;687</td><td class="best">4&nbsp;451 &plusmn; 1&nbsp;556</td><td>1.97 M</td></tr>
+                            <tr><td>Humanoid</td><td>humanoid_ppo_lr3e-04_seed42</td><td>3e-4</td><td>42</td><td>1024</td><td>5M</td><td>1&nbsp;014</td><td>850 &plusmn; 179</td><td>350 k*</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-note">* The lr 3e-4 Ant and Humanoid runs reached half of their <em>own</em> best score early and then plateaued. “Steps to 50%” measures the time to reach a threshold, not final quality. For the stuck runs, the more meaningful measure is the best evaluation score because neither run escaped its local optimum.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Key Findings</h2>
+                <p class="section-lede">The controlled comparisons and PPO training signals point to four main conclusions.</p>
+
+                <div class="key-details">
+                    <div class="key-details-grid">
+                        <div class="detail-card">
+                            <h3>What the comparisons showed</h3>
+                            <ul>
+                                <li><strong>Learning rate is the most consequential hyperparameter.</strong> lr 1e-4 outperformed lr 3e-4 on both comparison tasks. The difference was especially large on Humanoid, where lr 3e-4 remained near 850 reward for the full 5M-step budget.</li>
+                                <li><strong>Seed sensitivity is real but secondary.</strong> The two Humanoid runs at lr 1e-4 reached similar best evaluation scores, 5&nbsp;783 and 5&nbsp;687, but their final 20-episode scores differed by about 300 points. Single-run rankings should therefore be interpreted cautiously.</li>
+                                <li><strong>Larger rollout buffers can help slower learners.</strong> Increasing Ant&rsquo;s <code>n_steps</code> from 1024 to 2048 reduced early progress at 1M steps, from 1&nbsp;085 to 571, but produced a better final result with lower variance, 3&nbsp;147 versus 1&nbsp;605.</li>
+                                <li><strong>Training diagnostics can reveal failure early.</strong> Successful runs raised explained variance to approximately 0.95 or higher within the first 10&ndash;15% of training. The failed Humanoid run became nearly deterministic before it explored behaviours associated with walking.</li>
+                            </ul>
+                        </div>
+
+                        <div class="detail-card">
+                            <h3>Survive vs score</h3>
+                            <ul>
+                                <li>Walker2d and Ant reach the 1000-step episode cap and remain there, indicating that basic survival is solved for these tasks.</li>
+                                <li>Humanoid plateaus around 750&ndash;780 steps even in the best run. The policy still falls roughly one-quarter of the way through the maximum episode, which is consistent with the &plusmn;1&nbsp;500 spread in final evaluation scores.</li>
+                                <li>The best Humanoid run approaches its trust-region boundary, with clip fraction near 0.6 and approximate KL near 0.2. KL early stopping, learning-rate decay, an entropy bonus, or a larger network are reasonable next experiments.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery gallery--training-figures">
+                <h2>Training Figures</h2>
+                <div class="gallery-grid gallery-grid--stack">
+                    <figure>
+                        <img src="./assets/img/ppo/learning-curves.png" alt="PPO learning curves: evaluation reward during training for all eight runs across Hopper, Walker2d, Ant and Humanoid" loading="lazy" decoding="async">
+                        <figcaption>Figure 1. Evaluation reward during training for all eight runs. Each line shows the mean and standard deviation over ten deterministic episodes; panels use the native budgets of 1M, 2M, 3M, and 5M environment steps for Hopper, Walker2d, Ant, and Humanoid, respectively.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./assets/img/ppo/lr-comparison.png" alt="Learning-rate comparison on Ant and Humanoid: lr 1e-4 versus lr 3e-4" loading="lazy" decoding="async">
+                        <figcaption>Figure 2. Learning-rate comparison on Ant and Humanoid with all other settings held fixed. The lower rate improves both final outcomes, with the clearest separation on Humanoid.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./assets/img/ppo/seed-robustness.png" alt="Seed robustness on Humanoid at lr 1e-4: seed 42 versus seed 7" loading="lazy" decoding="async">
+                        <figcaption>Figure 3. Seed comparison for Humanoid at lr 1e-4. The two runs follow similar learning trends, but their late-training rewards remain variable, showing why a single seed is insufficient for a definitive ranking.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./assets/img/ppo/sample-efficiency.png" alt="Sample efficiency: best run per environment with reward normalised by its best value" loading="lazy" decoding="async">
+                        <figcaption>Figure 4. Sample efficiency for the best run of each environment. Rewards are normalised by the final best value for that run, so the curves compare progress toward each task&rsquo;s own endpoint rather than absolute performance.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./assets/img/ppo/episode-length.png" alt="Training episode length, rolling mean over 50 episodes, for the best run per environment" loading="lazy" decoding="async">
+                        <figcaption>Figure 5. Episode length during training, shown as a 50-episode rolling mean. Walker2d and Ant approach the 1000-step cap, while Humanoid improves without reaching the cap, separating survival from higher task reward.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./assets/img/ppo/ppo-internals.png" alt="PPO internals for the best run of each environment: explained variance, entropy loss, clip fraction and approximate KL" loading="lazy" decoding="async">
+                        <figcaption>Figure 6. PPO diagnostics for the best run in each environment. Explained variance, entropy loss, clip fraction, and approximate KL provide context for value-function quality, exploration, and the size of policy updates.</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <div class="gallery">
+                <h2>Rollout Demos</h2>
+                <p class="section-lede">Each clip shows one rollout from a selected checkpoint using the deterministic evaluation policy without exploration noise. The clips are approximately 17 seconds of simulated time.</p>
+                <div class="gallery-grid">
+                    <figure>
+                        <video src="./assets/img/ppo/hopper.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Hopper-v5 rollout with the trained PPO policy"></video>
+                        <figcaption>Hopper-v5 &middot; lr 3e-4, seed 42. Final score: 3&nbsp;486 &plusmn; 5.</figcaption>
+                    </figure>
+                    <figure>
+                        <video src="./assets/img/ppo/walker2d.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Walker2d-v5 rollout with the trained PPO policy"></video>
+                        <figcaption>Walker2d-v5 &middot; lr 3e-4, seed 42. Final score: 6&nbsp;008 &plusmn; 27.</figcaption>
+                    </figure>
+                    <figure>
+                        <video src="./assets/img/ppo/ant-lr1e-04.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Ant-v5 rollout with the PPO policy trained at learning rate 1e-4"></video>
+                        <figcaption>Ant-v5 &middot; lr 1e-4. Final score: 3&nbsp;100 &plusmn; 97.</figcaption>
+                    </figure>
+                    <figure>
+                        <video src="./assets/img/ppo/ant-lr3e-04.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Ant-v5 rollout with the PPO policy trained at learning rate 3e-4"></video>
+                        <figcaption>Ant-v5 &middot; lr 3e-4. Final score: 1&nbsp;605 &plusmn; 608.</figcaption>
+                    </figure>
+                </div>
+                <div class="gallery-grid">
+                    <figure>
+                        <video src="./assets/img/ppo/humanoid-lr3e-04-seed42.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Humanoid-v5 rollout with the PPO policy trained at learning rate 3e-4, stuck in a local optimum"></video>
+                        <figcaption>Humanoid-v5 &middot; lr 3e-4, seed 42. The policy remains in the stand-still local optimum. Final score: 850 &plusmn; 179.</figcaption>
+                    </figure>
+                    <figure>
+                        <video src="./assets/img/ppo/humanoid-lr1e-04-seed42.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Humanoid-v5 rollout with the PPO policy trained at learning rate 1e-4, seed 42"></video>
+                        <figcaption>Humanoid-v5 &middot; lr 1e-4, seed 42. Final score: 4&nbsp;160 &plusmn; 1&nbsp;525.</figcaption>
+                    </figure>
+                    <figure>
+                        <video src="./assets/img/ppo/humanoid-lr1e-04-seed7.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Humanoid-v5 rollout with the PPO policy trained at learning rate 1e-4, seed 7"></video>
+                        <figcaption>Humanoid-v5 &middot; lr 1e-4, seed 7. Final score: 4&nbsp;451 &plusmn; 1&nbsp;556.</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">← Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <a href="./index.html" class="footer-brand">Utkarsh Sheel Anand</a>
+                <ul class="footer-nav">
+                    <li><a href="./index.html">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span data-year>2025</span> Utkarsh Sheel Anand. All rights reserved.</p>
+                <ul class="social-links">
+                    <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

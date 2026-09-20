@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESKF Sensor Fusion | Utkarsh Sheel Anand</title>
+    <meta name="description" content="A from-scratch 15-state Error-State Kalman Filter that fuses IMU propagation with simulated GPS and odometry on the EuRoC MH_01_easy dataset, achieving 3.9 cm 3D position RMSE.">
+    <meta name="theme-color" content="#0B0E14">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://dexut.github.io/devut.github.io/eskf-sensor-fusion.html">
+    <meta property="og:title" content="ESKF Sensor Fusion | Utkarsh Sheel Anand">
+    <meta property="og:description" content="A from-scratch 15-state Error-State Kalman Filter that fuses IMU propagation with simulated GPS and odometry on the EuRoC MH_01_easy dataset, achieving 3.9 cm 3D position RMSE.">
+    <meta property="og:image" content="https://dexut.github.io/devut.github.io/assets/img/eskf/og.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    <script>document.documentElement.classList.add('js');</script>
+    <script src="./assets/js/main.js" defer></script>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+        <div class="container">
+            <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
+            <nav class="main-nav" aria-label="Primary">
+                <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
+                    <span></span>
+                    <span class="sr-only">Menu</span>
+                </button>
+                <ul id="primary-navigation" class="nav-list" data-visible="false">
+                    <li><a href="./index.html" class="active" aria-current="page">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content" class="project-page" data-category="aerospace robotics">
+        <div class="container">
+            <nav class="breadcrumbs">
+                <a href="./index.html">Home</a> / <a href="./index.html#featured-work">Work</a> / <span>ESKF Sensor Fusion</span>
+            </nav>
+
+            <div class="project-header">
+                <span class="project-category-tag">Aerospace &middot; Robotics</span>
+                <h1>ESKF Sensor Fusion</h1>
+            </div>
+
+            <p class="project-abstract">Pure inertial integration drifts quickly because small accelerometer and gyroscope errors accumulate in velocity, position, and attitude. This project implements the standard correction from scratch in plain Python: a <strong>15-state Error-State Kalman Filter</strong> that propagates the 200&nbsp;Hz IMU stream from the EuRoC <code>MH_01_easy</code> MAV sequence and corrects drift with simulated 10&nbsp;Hz GPS position and odometry velocity measurements. The full run achieves <strong>3.9&nbsp;cm 3D position RMSE</strong>. The nominal state stores the current estimate of position, velocity, attitude, and IMU biases, while a local error state <code>[dp, dv, d&theta;, dbg, dba]</code> represents small perturbations around that estimate. Propagation and measurement updates operate on this local error, which is approximately linear, before the correction is injected into the nominal state and reset to zero. The implementation follows Sol&agrave;&rsquo;s local-error quaternion formulation (<code>arXiv:1711.02508</code>) and uses RK4 nominal integration, right-multiplicative attitude injection <code>q &larr; q &middot; dq</code>, and Joseph-form covariance updates. It uses NumPy and a YAML configuration file, without ROS or a larger framework.</p>
+
+            <a href="https://github.com/Utkarsh-Sheel-A/Error-State-Kalman-Filter" class="btn btn-primary btn-external" target="_blank" rel="noopener">View on GitHub</a>
+
+            <div class="key-details">
+                <div class="key-details-grid">
+                    <div class="detail-card">
+                        <h3>The Estimator</h3>
+                        <ul>
+                            <li><strong>15-state local error:</strong> <code>[dp, dv, d&theta;, dbg, dba]</code> contains position, velocity, three-parameter attitude, and IMU bias errors. These are small perturbations around the current estimate rather than a second full state.</li>
+                            <li><strong>Nominal state:</strong> position, velocity, quaternion attitude <code>q = [w, x, y, z]</code> (body-to-world), and both IMU biases. This is the state reported by the filter.</li>
+                            <li><strong>Right-multiplicative injection:</strong> the attitude correction is <code>q &larr; q &middot; dq</code>, applied as a body-frame perturbation. After injection, the error state resets to zero and the estimated bias correction is folded into the nominal state.</li>
+                            <li><strong>Fixed-gravity 15-state variant:</strong> the implementation uses <code>g = [0, 0, &minus;9.81]</code> rather than the 18-state form that also estimates gravity. This is an explicit scope decision.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Propagation &amp; Correction</h3>
+                        <ul>
+                            <li><strong>IMU propagation:</strong> RK4 integrates the nominal state with gravity expressed in the world frame. A linearised 15-state covariance prediction uses the IMU noise densities and bias random walks from <code>ekf_params.yaml</code>.</li>
+                            <li><strong>GPS correction:</strong> position-only update. <strong>Odometry correction:</strong> velocity-only update. Both are applied in timestamp order as they arrive within the 200&nbsp;Hz IMU stream.</li>
+                            <li><strong>Joseph-form covariance update:</strong> <code>P = (I &minus; KH)P(I &minus; KH)<sup>T</sup> + KRK<sup>T</sup></code> is used instead of the naive <code>(I &minus; KH)P</code> form to preserve numerical symmetry.</li>
+                            <li><code>main.py</code> runs the ordered update loop: advance the IMU stream, consume newly available measurements, and log the state estimate and selected covariance diagonals.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>The Experiment</h3>
+                        <ul>
+                            <li><strong>Dataset:</strong> EuRoC <code>MH_01_easy</code>, an indoor MAV flight with a 200&nbsp;Hz IMU and Leica ground-truth trajectory. The loader reads the CSV exports; the raw archive is not redistributed.</li>
+                            <li><strong>Synthetic external sensors:</strong> because the flight was indoors, the dataset has no real GPS. Position and velocity observations are generated from ground truth in <code>eskf/utils/noise_sim.py</code>.</li>
+                            <li><strong>Measurement model:</strong> GPS runs at 10&nbsp;Hz with Gaussian position noise of &sigma; = 5&nbsp;cm in X/Y and 10&nbsp;cm in Z. Odometry runs at 10&nbsp;Hz with 5&nbsp;cm/s Gaussian velocity noise on all axes.</li>
+                            <li><strong>Ground-truth initialization:</strong> the first ground-truth pose, velocity, and biases are used with small initial covariances. This isolates asynchronous sensor fusion rather than cold-start convergence.</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-card">
+                        <h3>Results &amp; Scope</h3>
+                        <ul>
+                            <li><strong>3.912&nbsp;cm 3D position RMSE</strong> over 36&nbsp;380 samples using seed 42 and the default configuration. This is below the 5&ndash;10&nbsp;cm simulated GPS noise, indicating that the filter combines inertial propagation with repeated corrections rather than following individual measurements.</li>
+                            <li><strong>Portfolio scope:</strong> the implementation focuses on readable, inspectable ESKF mechanics rather than production navigation features.</li>
+                            <li><strong>Limitations:</strong> external sensors are simulated, gravity is fixed, and the covariance transition uses a second-order approximation rather than a full matrix exponential.</li>
+                            <li>Results can vary with the dataset copy, Python and NumPy versions, and simulation seed. The reported value should therefore be understood as a result from this configuration, not a universal benchmark.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>The Pipeline</h2>
+                <p class="section-lede">The estimator is organised as one time-ordered loop with six clearly separated responsibilities.</p>
+                <p><code>main.py</code> walks through the IMU stream and applies each simulated GPS and odometry measurement as it arrives, so observations remain time ordered. Propagation and covariance prediction are implemented in <code>imu_predictor.py</code>; the two measurement updates are separate modules; and error injection and reset are defined with the state itself.</p>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <caption>Stages of a run, their rates, and where they live</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Stage</th>
+                                <th scope="col">Responsibility</th>
+                                <th scope="col">Rate</th>
+                                <th scope="col">Module</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>IMU propagation</td><td>RK4 nominal integration + linearized covariance prediction</td><td>200 Hz</td><td><code>eskf/imu_predictor.py</code></td></tr>
+                            <tr><td>GPS correction</td><td>Position-only measurement update (Joseph form)</td><td>10 Hz</td><td><code>eskf/gps_updater.py</code></td></tr>
+                            <tr><td>Odometry correction</td><td>Velocity-only measurement update (Joseph form)</td><td>10 Hz</td><td><code>eskf/odom_updater.py</code></td></tr>
+                            <tr><td>Error injection</td><td>Fold the estimated error into the nominal state, reset the error to zero</td><td>per update</td><td><code>eskf/state.py</code></td></tr>
+                            <tr><td>Configuration</td><td>IMU noise densities, simulation rates and noise, initial covariances</td><td>fixed</td><td><code>data/config/ekf_params.yaml</code></td></tr>
+                            <tr><td>Output</td><td>Estimated position, attitude, velocity, covariance diagonals</td><td>per IMU step</td><td><code>output/trajectory.csv</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-note">The filter initializes from the first ground-truth pose, velocity, and biases with small initial covariances. The run therefore measures estimation quality rather than convergence from a cold start.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Results</h2>
+                <p class="section-lede">Full run on EuRoC MH_01_easy, seed 42, default configuration.</p>
+
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <caption>Position RMSE against interpolated EuRoC ground truth (36&nbsp;380 samples)</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Axis</th>
+                                <th scope="col">RMSE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>X</td><td>1.831 cm</td></tr>
+                            <tr><td>Y</td><td>2.027 cm</td></tr>
+                            <tr><td>Z</td><td>2.800 cm</td></tr>
+                            <tr><td>3D</td><td class="best">3.912 cm</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-note">The simulated GPS has 5&ndash;10&nbsp;cm noise, yet the fused 3.9&nbsp;cm error is smaller than an individual GPS sample. This indicates that the filter balances inertial propagation against the corrections instead of tracking the measurements directly. Results can vary with the dataset copy, library versions, and simulation seed.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>What I Learned</h2>
+                <p class="section-lede">Four practical lessons emerged from implementing and testing the filter mechanics.</p>
+
+                <div class="key-details">
+                    <div class="key-details-grid">
+                        <div class="detail-card">
+                            <h3>Why estimate the error, not the state</h3>
+                            <ul>
+                                <li>Attitude lives on a manifold: a quaternion carries four numbers under a unit-norm constraint, so a filter over the full state ends up with an over-parameterized, rank-deficient covariance.</li>
+                                <li>Representing attitude error as a three-parameter rotation vector around the nominal quaternion gives a minimal, well-conditioned 15-state model. The resulting updates are ordinary matrix operations in the local error coordinates.</li>
+                                <li>The reset step is where it becomes concrete: after injecting <code>q &larr; q &middot; dq</code> and folding in the bias correction, the error state returns to exactly zero. The filter re-linearizes around the new best estimate every time a measurement lands.</li>
+                            </ul>
+                        </div>
+
+                        <div class="detail-card">
+                            <h3>Symmetry is a constraint, not a detail</h3>
+                            <ul>
+                                <li><code>(I &minus; KH)P</code> looks harmless but can slowly destroy covariance symmetry through floating-point error. The Joseph form is more robust to this effect.</li>
+                                <li>The tests assert structural invariants rather than golden numbers: the covariance stays symmetric (<code>P &asymp; P<sup>T</sup></code>) and the error state is exactly zero after every injection.</li>
+                                <li>Cheap invariants like these catch bugs that a &ldquo;the RMSE looks fine&rdquo; check would happily ship.</li>
+                            </ul>
+                        </div>
+
+                        <div class="detail-card">
+                            <h3>Simulate what you do not have, and say so</h3>
+                            <ul>
+                                <li>EuRoC was flown indoors; there is no ground-truth-aligned GPS anywhere in the dataset. Synthesizing position fixes from ground truth is what makes the experiment runnable at all.</li>
+                                <li>It is also the experiment&rsquo;s biggest caveat: ideal sensors plus additive white noise isolate fusion behaviour, but say nothing about outlier robustness or real GPS failure modes.</li>
+                                <li>This limitation is important because the low RMSE should not be interpreted as evidence of robustness to real GPS failure modes. The same care applies to the ground-truth initialization.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery gallery--eskf-figures">
+                <h2>Figures</h2>
+                <p class="section-lede">A full run on MH_01_easy. The estimate follows the ground-truth path, and the position errors remain mostly within the filter&rsquo;s own 3&sigma; covariance bounds.</p>
+                <div class="gallery-grid gallery-grid--stack">
+                    <figure class="figure--trajectory">
+                        <img src="./assets/img/eskf/3d-trajectory.png" alt="3D trajectory plot: EuRoC MH_01_easy ground truth in green against the dashed blue ESKF estimate over the full flight" loading="lazy" decoding="async">
+                        <figcaption>Figure 1. Three-dimensional trajectory over the full MH_01_easy flight, approximately 183&nbsp;s and 36&nbsp;380 samples. The dashed ESKF estimate closely follows the Leica ground-truth trajectory throughout the sequence.</figcaption>
+                    </figure>
+                    <figure class="figure--position-errors">
+                        <img src="./assets/img/eskf/position-errors.png" alt="Position error per axis with 3-sigma covariance bounds: X, Y and Z errors in metres, plus the absolute 3D error in centimetres" loading="lazy" decoding="async">
+                        <figcaption>Figure 2. Position error in X, Y, and Z with the filter&rsquo;s 3&sigma; covariance bounds, followed by absolute 3D error in centimetres. Most errors remain within the predicted bounds, while the largest excursions occur during the fastest manoeuvres.</figcaption>
+                    </figure>
+                </div>
+                <div class="gallery-grid">
+                    <figure>
+                        <img src="./assets/img/eskf/position-components.png" alt="Position components versus time: X, Y and Z position, ground truth against the ESKF estimate" loading="lazy" decoding="async">
+                        <figcaption>Figure 3. Position components over time. The ESKF estimate and ground truth remain closely aligned across all three axes.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="./assets/img/eskf/velocity-components.png" alt="Velocity components versus time: Vx, Vy and Vz, ground truth against the ESKF estimate" loading="lazy" decoding="async">
+                        <figcaption>Figure 4. Velocity components over time. The estimate follows the ground truth while incorporating noisy 10&nbsp;Hz odometry corrections between IMU propagation steps.</figcaption>
+                    </figure>
+                </div>
+                <p class="table-note">Figures generated by <code>scripts/visualize_trajectory.py</code> and <code>scripts/plot_errors.py</code>. The same limitations apply throughout the run: simulated GPS and odometry, fixed gravity, and a second-order approximation of the covariance transition.</p>
+            </div>
+
+            <nav class="project-nav">
+                <a href="./index.html" class="back-link">← Back to All Work</a>
+                <div class="prev-next-links">
+                    <span class="prev-link-container"></span>
+                    <span class="next-link-container"></span>
+                </div>
+            </nav>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-top">
+                <a href="./index.html" class="footer-brand">Utkarsh Sheel Anand</a>
+                <ul class="footer-nav">
+                    <li><a href="./index.html">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span data-year>2025</span> Utkarsh Sheel Anand. All rights reserved.</p>
+                <ul class="social-links">
+                    <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dexut.github.io/devut.github.io/sitemap.xml

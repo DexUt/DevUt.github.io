@@ -5,32 +5,112 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Utkarsh Sheel Anand | Portfolio</title>
     <meta name="description" content="The professional portfolio of Utkarsh Sheel Anand, showcasing projects in engineering and robotics.">
+    <meta name="theme-color" content="#0B0E14">
 
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://utkarsh.dev/">
+    <meta property="og:url" content="https://dexut.github.io/devut.github.io/">
     <meta property="og:title" content="Utkarsh Sheel Anand | Portfolio">
     <meta property="og:description" content="The professional portfolio of Utkarsh Sheel Anand, showcasing projects in engineering and robotics.">
-    <meta property="og:image" content="https://utkarsh.dev/assets/img/headshot.jpg">
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://utkarsh.dev/">
-    <meta property="twitter:title" content="Utkarsh Sheel Anand | Portfolio">
-    <meta property="twitter:description" content="The professional portfolio of Utkarsh Sheel Anand, showcasing projects in engineering and robotics.">
-    <meta property="twitter:image" content="https://utkarsh.dev/assets/img/headshot.jpg">
+    <meta property="og:image" content="https://dexut.github.io/devut.github.io/assets/img/headshot.jpeg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://dexut.github.io/devut.github.io/">
+    <meta name="twitter:title" content="Utkarsh Sheel Anand | Portfolio">
+    <meta name="twitter:description" content="The professional portfolio of Utkarsh Sheel Anand, showcasing projects in engineering and robotics.">
+    <meta name="twitter:image" content="https://dexut.github.io/devut.github.io/assets/img/headshot.jpeg">
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/styles.css">
+    <script>document.documentElement.classList.add('js');</script>
     <script src="./assets/js/main.js" defer></script>
 </head>
 <body>
+    <!-- Decorative schematic icons (line art) -->
+    <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute">
+        <symbol id="i-robot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="8.5" width="17" height="8.5" rx="2.5"/>
+            <path d="M12 8.5V6.2"/><circle cx="12" cy="4.6" r="1.5"/>
+            <path d="M9 12.6h.01M15 12.6h.01"/>
+            <path d="M6 17v2.6M18 17v2.6M4.6 19.6h14.8"/>
+        </symbol>
+        <symbol id="i-drone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="5.6" cy="5.6" r="2.6"/><circle cx="18.4" cy="5.6" r="2.6"/>
+            <circle cx="5.6" cy="18.4" r="2.6"/><circle cx="18.4" cy="18.4" r="2.6"/>
+            <rect x="9.4" y="9.4" width="5.2" height="5.2" rx="1.2"/>
+            <path d="M7.6 7.6l1.8 1.8M16.4 7.6l-1.8 1.8M7.6 16.4l1.8-1.8M16.4 16.4l-1.8-1.8"/>
+        </symbol>
+        <symbol id="i-egg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.2c3.3 0 5.9 4.4 5.9 8.4a5.9 5.9 0 1 1-11.8 0c0-4 2.6-8.4 5.9-8.4z"/>
+            <path d="M9.4 15.4a3.1 3.1 0 0 0 2.7 1.6"/>
+        </symbol>
+        <symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3.1"/>
+            <circle cx="12" cy="12" r="7.6" stroke-dasharray="2.6 3.4" stroke-dashoffset="1"/>
+        </symbol>
+        <symbol id="i-satellite" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9.7" y="9.7" width="4.6" height="4.6" rx="0.7" transform="rotate(45 12 12)"/>
+            <path d="M7.9 7.9L4.2 4.2M16.1 16.1l3.7 3.7"/>
+            <path d="M2.8 6.4l3.6-3.6M17.6 20.6l3.6-3.6"/>
+            <path d="M12 17v3.2M9.8 21.4h4.4"/>
+        </symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="8.2"/>
+            <path d="M3.8 12h16.4"/>
+            <path d="M12 3.8c2.3 2.3 3.6 5.1 3.6 8.2s-1.3 5.9-3.6 8.2c-2.3-2.3-3.6-5.1-3.6-8.2s1.3-5.9 3.6-8.2z"/>
+        </symbol>
+        <symbol id="i-plane" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3.2v5.6l7.4 3.5v2l-7.4-1.7v4.6l2.6 1.9v1.5L12 20.1l-2.6.5v-1.5l2.6-1.9v-4.6L4.6 14.3v-2L12 8.8V3.2z"/>
+        </symbol>
+        <symbol id="i-flask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.4 3h5.2"/>
+            <path d="M10.2 3v5.4L6 16.8a2.3 2.3 0 0 0 2.1 3.2h7.8a2.3 2.3 0 0 0 2.1-3.2l-4.2-8.4V3"/>
+            <path d="M7.6 14.4h8.8"/>
+        </symbol>
+        <symbol id="i-thermal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 3.5v7.5M10 3.5v7.5M14 3.5v7.5M18 3.5v7.5"/>
+            <path d="M4.5 11h15v3a5.5 5.5 0 0 1-5.5 5.5h-4A5.5 5.5 0 0 1 4.5 14v-3z"/>
+        </symbol>
+        <symbol id="i-nn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="4.9" cy="8.4" r="1.6"/><circle cx="4.9" cy="15.6" r="1.6"/>
+            <circle cx="12" cy="6" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="18" r="1.6"/>
+            <circle cx="19.1" cy="12" r="1.6"/>
+            <path d="M6.6 7.7L10.4 6.6M6.4 9.3L10.7 11.4M6.1 10L10.9 16.7M6.1 14L10.9 7.3M6.4 14.7L10.7 12.6M6.6 16.3L10.4 17.4M13.6 6.9L17.6 11.2M13.9 12h3.5M13.6 17.1L17.6 12.8"/>
+        </symbol>
+        <symbol id="i-network" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2.1"/>
+            <circle cx="4.6" cy="5.4" r="1.7"/><circle cx="19.4" cy="5.4" r="1.7"/>
+            <circle cx="4.6" cy="18.6" r="1.7"/><circle cx="19.4" cy="18.6" r="1.7"/>
+            <path d="M6 6.7l4.2 3.6M18 6.7l-4.2 3.6M6 17.3l4.2-3.6M18 17.3l-4.2-3.6"/>
+        </symbol>
+        <symbol id="i-estimate" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="12" rx="8.4" ry="5.6" transform="rotate(-24 12 12)"/>
+            <ellipse cx="12" cy="12" rx="4.5" ry="3" transform="rotate(-24 12 12)"/>
+            <circle cx="12" cy="12" r="1.2"/>
+        </symbol>
+        <symbol id="i-arm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3.8 20.6h5.6"/>
+            <path d="M6.6 20.6v-3.9"/>
+            <circle cx="6.6" cy="14.9" r="1.8"/>
+            <path d="M7.9 13.8l5-4.5"/>
+            <circle cx="13.7" cy="8.6" r="1.8"/>
+            <path d="M15.2 10.1l3.2 3.2"/>
+            <path d="M18.4 13.3l-1.6 2.5M18.4 13.3l2.5-1.6"/>
+        </symbol>
+    </svg>
+
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <header class="site-header">
         <div class="container">
             <a href="./index.html" class="site-logo">Utkarsh Sheel Anand</a>
-            <nav class="main-nav">
+            <nav class="main-nav" aria-label="Primary">
                 <button class="nav-toggle" aria-controls="primary-navigation" aria-expanded="false">
                     <span></span>
                     <span class="sr-only">Menu</span>
                 </button>
                 <ul id="primary-navigation" class="nav-list" data-visible="false">
-                    <li><a href="./index.html" class="active">Work</a></li>
+                    <li><a href="./index.html" class="active" aria-current="page">Work</a></li>
                     <li><a href="./resume.html">Resume</a></li>
                     <li><a href="./contact.html">Contact</a></li>
                 </ul>
@@ -42,18 +122,25 @@
         <section class="hero">
             <div class="container hero-content">
                 <div class="hero-text">
-                    <h1>Utkarsh Sheel Anand</h1>
+                    <p class="eyebrow">Robotics &middot; Controls &middot; Autonomy</p>
+                    <h1>Utkarsh Sheel <span class="name-accent">Anand</span></h1>
                     <p class="tagline">Innovate. Automate. Dominate.</p>
                     <div class="hero-cta">
                         <a href="#featured-work" class="btn btn-primary">View Work</a>
                         <a href="./contact.html" class="btn">Contact Me</a>
                     </div>
+                    <ul class="hero-stats">
+                        <li><span class="stat-value">13</span><span class="stat-label">Projects</span></li>
+                        <li><span class="stat-value">09</span><span class="stat-label">Robotics</span></li>
+                        <li><span class="stat-value">01</span><span class="stat-label">Publication</span></li>
+                        <li><span class="stat-value">16 mo</span><span class="stat-label">R&amp;D Co-op</span></li>
+                    </ul>
                 </div>
                 <div class="hero-image">
-                    <img src="./assets/img/headshot.jpeg" alt="A professional headshot of Utkarsh Sheel Anand.">
+                    <img src="./assets/img/headshot.jpeg" alt="A professional headshot of Utkarsh Sheel Anand." width="800" height="800">
                 </div>
             </div>
-            <div class="scroll-indicator">
+            <div class="scroll-indicator" aria-hidden="true">
                 <span>Scroll</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
@@ -64,79 +151,187 @@
         <section class="featured-work" id="featured-work">
             <div class="container">
                 <div class="section-header">
+                    <p class="eyebrow">Portfolio</p>
                     <h2>Featured Work</h2>
-                    <p>A collection of projects spanning robotics, aerospace systems, and research.</p>
+                    <p>A collection of projects spanning robotics, aerospace systems, machine learning, and research.</p>
                 </div>
 
-                <div class="filter-tabs">
-                    <button class="filter-tab active" data-filter="all">All</button>
-                    <button class="filter-tab" data-filter="robotics">Robotics</button>
-                    <button class="filter-tab" data-filter="aerospace">Aerospace</button>
-                    <button class="filter-tab" data-filter="research">Research</button>
+                <div class="filter-tabs" role="group" aria-label="Filter projects by category">
+                    <button class="filter-tab active" data-filter="all" aria-pressed="true">All <span class="count">13</span></button>
+                    <button class="filter-tab" data-filter="robotics" aria-pressed="false">Robotics <span class="count">9</span></button>
+                    <button class="filter-tab" data-filter="aerospace" aria-pressed="false">Aerospace <span class="count">6</span></button>
+                    <button class="filter-tab" data-filter="research" aria-pressed="false">Research <span class="count">2</span></button>
+                    <button class="filter-tab" data-filter="machine-learning" aria-pressed="false">Machine Learning <span class="count">2</span></button>
                 </div>
 
                 <div class="card-grid">
-                    <article class="card" data-category="robotics">
-                        <span class="card-category">Robotics</span>
-                        <h3>Egg Mover Project</h3>
-                        <p>A robotic system designed to lift, transport, and precisely place a raw egg across obstacles using DC motors and Raspberry Pi control.</p>
-                        <a href="./egg-mover.html" class="card-link">View Project →</a>
+                    <article class="card" data-category="machine-learning robotics">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-arm"></use></svg>
+                            <span class="card-cat">Machine Learning &middot; Robotics</span>
+                            <span class="card-index">01</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./act-so101-sharpener.html">ACT Policy on SO-101</a></h3>
+                            <p>Behavior cloning with Hugging Face LeRobot: an ACT policy trained on 45 teleoperated demonstrations for 40,000 steps on a laptop GPU, then scored over 14 real-robot rollouts on a physical SO-101 arm.</p>
+                            <a href="./act-so101-sharpener.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
+                    </article>
+
+                    <article class="card" data-category="aerospace robotics">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-estimate"></use></svg>
+                            <span class="card-cat">Aerospace &middot; Robotics</span>
+                            <span class="card-index">02</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./eskf-sensor-fusion.html">ESKF Sensor Fusion</a></h3>
+                            <p>A 15-state Error-State Kalman Filter in plain Python, fusing 200 Hz IMU propagation with simulated 10 Hz GPS and odometry corrections on the EuRoC MAV dataset to 3.9 cm 3D position RMSE.</p>
+                            <a href="./eskf-sensor-fusion.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
                     </article>
 
                     <article class="card" data-category="robotics">
-                        <span class="card-category">Robotics</span>
-                        <h3>ROS2 Mobile Robot</h3>
-                        <p>A differential-drive mobile robot built from the ground up in ROS 2 with Gazebo simulation, real-time TF frames, and joystick teleop.</p>
-                        <a href="./ros2-mobile-robot.html" class="card-link">View Project →</a>
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-network"></use></svg>
+                            <span class="card-cat">Robotics</span>
+                            <span class="card-index">03</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./zenoh-fleet.html">ZenohFleet</a></h3>
+                            <p>A ROS 2 robot streams camera video and odometry over Zenoh to a ROS-free macOS ground station that decodes the raw ROS 2 messages, runs YOLOv8n, and sends drive commands back across the same link.</p>
+                            <a href="./zenoh-fleet.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
+                    </article>
+
+                    <article class="card" data-category="machine-learning robotics">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-nn"></use></svg>
+                            <span class="card-cat">Machine Learning &middot; Robotics</span>
+                            <span class="card-index">04</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./ppo-locomotion.html">PPO Locomotion Study</a></h3>
+                            <p>A reinforcement-learning study applying PPO with Stable-Baselines3 to four MuJoCo locomotion benchmarks, with learning-rate, seed and rollout-length experiments.</p>
+                            <a href="./ppo-locomotion.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
+                    </article>
+
+                    <article class="card" data-category="robotics">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-robot"></use></svg>
+                            <span class="card-cat">Robotics</span>
+                            <span class="card-index">05</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./ros2-mobile-robot.html">ROS2 Mobile Robot</a></h3>
+                            <p>A differential-drive mobile robot built from the ground up in ROS 2 with Gazebo simulation, real-time TF frames, and joystick teleop.</p>
+                            <a href="./ros2-mobile-robot.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
+                    </article>
+
+                    <article class="card" data-category="aerospace robotics">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-drone"></use></svg>
+                            <span class="card-cat">Aerospace &middot; Robotics</span>
+                            <span class="card-index">06</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./drone-project.html">Drone Project</a></h3>
+                            <p>UAV design and control system development with emphasis on flight dynamics, stability analysis, and guidance algorithms.</p>
+                            <a href="./drone-project.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
+                    </article>
+
+                    <article class="card" data-category="robotics">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-egg"></use></svg>
+                            <span class="card-cat">Robotics</span>
+                            <span class="card-index">07</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./egg-mover.html">Egg Mover Project</a></h3>
+                            <p>A robotic system designed to lift, transport, and precisely place a raw egg across obstacles using DC motors and Raspberry Pi control.</p>
+                            <a href="./egg-mover.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
+                    </article>
+
+                    <article class="card" data-category="robotics">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-cog"></use></svg>
+                            <span class="card-cat">Robotics</span>
+                            <span class="card-index">08</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./quick-return.html">Quick-Return Dynamics</a></h3>
+                            <p>Mechanism design and analysis of crank-link systems for applications requiring non-uniform motion characteristics.</p>
+                            <a href="./quick-return.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
+                    </article>
+
+                    <article class="card" data-category="aerospace robotics">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-satellite"></use></svg>
+                            <span class="card-cat">Aerospace &middot; Robotics</span>
+                            <span class="card-index">09</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./spacecraft-control.html">Spacecraft Attitude Dynamics and Control</a></h3>
+                            <p>ADCS simulation and analysis for spacecraft orientation control using various actuators and sensor configurations.</p>
+                            <a href="./spacecraft-control.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
                     </article>
 
                     <article class="card" data-category="aerospace">
-                        <span class="card-category">Aerospace</span>
-                        <h3>Weather Satellite Design</h3>
-                        <p>A complete CubeSat mission design for weather monitoring including power budgets, link analysis, and orbital dynamics simulation.</p>
-                        <a href="./weather-satellite.html" class="card-link">View Project →</a>
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-globe"></use></svg>
+                            <span class="card-cat">Aerospace</span>
+                            <span class="card-index">10</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./weather-satellite.html">Weather Satellite Design</a></h3>
+                            <p>A complete CubeSat mission design for weather monitoring including power budgets, link analysis, and orbital dynamics simulation.</p>
+                            <a href="./weather-satellite.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
+                    </article>
+
+                    <article class="card" data-category="aerospace">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-plane"></use></svg>
+                            <span class="card-cat">Aerospace</span>
+                            <span class="card-index">11</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./light-sport-aircraft.html">Light Sport Aircraft Design</a></h3>
+                            <p>Comprehensive aircraft design including aerodynamic analysis, weight estimation, and performance calculations.</p>
+                            <a href="./light-sport-aircraft.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
                     </article>
 
                     <article class="card" data-category="research">
-                        <span class="card-category">Research</span>
-                        <h3>Low Cost Gas Chromatograph</h3>
-                        <p>An affordable analytical instrument for separating and analyzing compounds, designed for educational and research applications.</p>
-                        <a href="./low-cost-gc.html" class="card-link">View Project →</a>
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-flask"></use></svg>
+                            <span class="card-cat">Research</span>
+                            <span class="card-index">12</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./low-cost-gc.html">Low Cost Gas Chromatograph</a></h3>
+                            <p>An affordable analytical instrument for separating and analyzing compounds, designed for educational and research applications.</p>
+                            <a href="./low-cost-gc.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
                     </article>
 
-                    <article class="card" data-category="research">
-                        <span class="card-category">Research</span>
-                        <h3>Enhanced Heat Sink</h3>
-                        <p>Advanced thermal management solution for hybrid-electric aircraft with optimized pin-fin designs for improved heat rejection.</p>
-                        <a href="./heat-sink.html" class="card-link">View Project →</a>
-                    </article>
-
-                    <article class="card" data-category="aerospace">
-                        <span class="card-category">Aerospace</span>
-                        <h3>Light Sport Aircraft Design</h3>
-                        <p>Comprehensive aircraft design including aerodynamic analysis, weight estimation, and performance calculations.</p>
-                        <a href="./light-sport-aircraft.html" class="card-link">View Project →</a>
-                    </article>
-
-                    <article class="card" data-category="aerospace">
-                        <span class="card-category">Aerospace</span>
-                        <h3>Drone Project</h3>
-                        <p>UAV design and control system development with emphasis on flight dynamics, stability analysis, and guidance algorithms.</p>
-                        <a href="./drone-project.html" class="card-link">View Project →</a>
-                    </article>
-
-                    <article class="card" data-category="aerospace">
-                        <span class="card-category">Aerospace</span>
-                        <h3>Spacecraft Attitude Dynamics and Control</h3>
-                        <p>ADCS simulation and analysis for spacecraft orientation control using various actuators and sensor configurations.</p>
-                        <a href="./spacecraft-control.html" class="card-link">View Project →</a>
-                    </article>
-
-                    <article class="card" data-category="robotics">
-                        <span class="card-category">Robotics</span>
-                        <h3>Quick-Return Dynamics</h3>
-                        <p>Mechanism design and analysis of crank-link systems for applications requiring non-uniform motion characteristics.</p>
-                        <a href="./quick-return.html" class="card-link">View Project →</a>
+                    <article class="card" data-category="research aerospace">
+                        <div class="card-cover">
+                            <svg class="card-cover-icon"><use href="#i-thermal"></use></svg>
+                            <span class="card-cat">Research &middot; Aerospace</span>
+                            <span class="card-index">13</span>
+                        </div>
+                        <div class="card-body">
+                            <h3><a href="./heat-sink.html">Enhanced Heat Sink</a></h3>
+                            <p>Advanced thermal management solution for hybrid-electric aircraft with optimized pin-fin designs for improved heat rejection.</p>
+                            <a href="./heat-sink.html" class="card-link">View Project <span>&rarr;</span></a>
+                        </div>
                     </article>
                 </div>
             </div>
@@ -145,11 +340,21 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; 2025 Utkarsh Sheel Anand. All rights reserved.</p>
-            <ul class="social-links">
-                <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
-                <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
-            </ul>
+            <div class="footer-top">
+                <a href="./index.html" class="footer-brand">Utkarsh Sheel Anand</a>
+                <ul class="footer-nav">
+                    <li><a href="./index.html">Work</a></li>
+                    <li><a href="./resume.html">Resume</a></li>
+                    <li><a href="./contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span data-year>2025</span> Utkarsh Sheel Anand. All rights reserved.</p>
+                <ul class="social-links">
+                    <li><a href="https://github.com/Utkarsh-Sheel-A" target="_blank" rel="noopener">GitHub</a></li>
+                    <li><a href="https://www.linkedin.com/in/utkarsh-sheel/" target="_blank" rel="noopener">LinkedIn</a></li>
+                </ul>
+            </div>
         </div>
     </footer>
 </body>

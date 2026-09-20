@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+._*
+
+# Office lock files
+~$*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Local project sources (large training artifacts — not part of the site)
+new_project/
